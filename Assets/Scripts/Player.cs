@@ -9,17 +9,19 @@ public class Player : MonoBehaviour
 	[SerializeField] GameObject m_myAttackHit;
 	[SerializeField] GameObject m_sword;
 	[SerializeField] GameObject m_playerObj;
-	[SerializeField] float m_boostWalkSpeed;
-	[SerializeField] float m_maxWalkSpeed;
+	[SerializeField] float m_boostWalkSpeed;		// 速度収束量
+	[SerializeField] float m_boostMagnificationAir;	// 空中での収束率
+	[SerializeField] float m_maxWalkSpeed;			// サイコウソク
 	[SerializeField] float m_swordEffectDelay;      // 斬撃のエフェクトが描画されるまでの時間
 	[SerializeField] float m_comboAttackDelay;      // 連続攻撃ができる猶予時間
 	[SerializeField] float m_cantAttackDuration;    // 攻撃入力を受け付けない時間
 	[SerializeField] float m_attackStartDuration;   // 攻撃発生までの時間
 	[SerializeField] float m_attackHitKeepDuration; // 攻撃判定の持続時間
 	[SerializeField] float m_moveHorizontalSpeed;   // 通常時の船の横移動量
-	[SerializeField] float m_tiltPower;             // 船が傾く量
-	[SerializeField] float m_rotateSpeed;           // フィーバー時等にプレイヤーの向きを変える速度
-	[SerializeField] float m_canShieldDelay;        // 前動作からシールドできるまでの猶予
+	[SerializeField] float m_jumpPower;				// ジャンプ力
+	[SerializeField] float m_gravityScale;          // 落下速度
+
+	const int ConboAttacks = 4;
 
 	Animator m_animator;
 	CharacterController m_controller;
@@ -35,7 +37,9 @@ public class Player : MonoBehaviour
 	float m_boatBoost;
 	float m_maxWidth;
 	float m_stunTimeLeft;
+	float m_speedY;
 	int m_totalScore;
+	int m_comboAmount;
 	bool m_isComboAttackReady;
 	bool m_isShield;
 	bool m_prevShield;
@@ -61,21 +65,24 @@ public class Player : MonoBehaviour
     {
 		m_attackedDelay += Time.deltaTime;
 
+		float boostMagnification = 
+			m_controller.isGrounded ? 1.0f : m_boostMagnificationAir;
+
 		if (m_moveXZ.magnitude <= m_stickControll.magnitude)
 		{
-			m_moveXZ += m_stickControll.normalized * m_boostWalkSpeed;
+			m_moveXZ += m_stickControll.normalized * m_boostWalkSpeed * boostMagnification;
 			m_walkSpeed = m_moveXZ.magnitude;
 			Debug.Log("Plus");
 
 			if (m_moveXZ.magnitude > m_stickControll.magnitude)
 			{
-				m_moveXZ = m_moveXZ.normalized;
+				m_moveXZ = m_moveXZ.normalized * m_stickControll.magnitude;
 			}
 		}
 		if (m_moveXZ.magnitude > m_stickControll.magnitude ||
 			m_stickControll.magnitude <= 0)
 		{
-			m_moveXZ -= m_moveXZ.normalized * m_boostWalkSpeed;
+			m_moveXZ -= m_moveXZ.normalized * m_boostWalkSpeed * boostMagnification;
 			m_walkSpeed = m_moveXZ.magnitude;
 			Debug.Log("Minus");
 
@@ -87,38 +94,53 @@ public class Player : MonoBehaviour
 
 		m_walkSpeed = m_moveXZ.magnitude;
 
-		Debug.Log(m_walkSpeed);
-
 		Vector3 moveX_Z = new(m_moveXZ.x, 0, m_moveXZ.y);
 		moveX_Z *= m_maxWalkSpeed;
 
-		m_totalMove = moveX_Z * Time.deltaTime;
+		m_speedY -= m_gravityScale;
+
+		m_totalMove = (moveX_Z + Vector3.up * m_speedY) * Time.deltaTime;
 
 		m_controller.Move(m_totalMove);
 
+		if (m_stickControll.magnitude > 0)
+		{
+			transform.rotation = Quaternion.Slerp(
+				transform.rotation,
+				Quaternion.LookRotation(new Vector3(m_stickControll.x, 0, m_stickControll.y)),
+				0.1f);
 
-		//Vector3 moveXZ = new(m_stickControll.x, 0, m_stickControll.y);
-		//m_moveXZ += moveXZ * m_maxWalkSpeed * m_boostWalkSpeed;
+			m_animator.speed = m_stickControll.magnitude;
+		}
+		else
+		{
+			m_animator.speed = 1;
+		}
 
-		//if (m_moveXZ.magnitude > m_maxWalkSpeed)
-		//{
-		//	m_moveXZ = m_moveXZ.normalized * m_maxWalkSpeed;
-		//}
+		if (m_controller.isGrounded)
+		{
+			m_speedY = -0.2f;
+		}
+		else
+		{
+			m_animator.SetFloat("SpeedY", m_speedY);
+		}
 
-		//Debug.Log(m_moveXZ.magnitude);
-
-		//m_moveXZ = m_moveXZ * Time.deltaTime;
-
-		//m_totalMove = m_moveXZ;
-
-		//m_controller.Move(m_totalMove);
-
-		//m_prevMoveXZ = moveXZ;
-    }
+		m_animator.SetBool("IsGrounded", m_controller.isGrounded);
+	}
 
 	public void OnMove(InputAction.CallbackContext callbackContext)
 	{
 		m_stickControll = callbackContext.ReadValue<Vector2>();
+
+		if (callbackContext.performed)
+		{
+			m_animator.SetBool("IsRun", true);
+		}
+		else
+		{
+			m_animator.SetBool("IsRun", false);
+		}
 	}
 
 	public void OnAttack(InputAction.CallbackContext callbackContext)
@@ -169,6 +191,20 @@ public class Player : MonoBehaviour
 		m_attackedDelay = 0;
 	}
 
+	public void OnJump(InputAction.CallbackContext callbackContext)
+	{
+		if (!callbackContext.performed)
+		{
+			return;
+		}
+
+		if (m_controller.isGrounded)
+		{
+			m_speedY = m_jumpPower;
+
+			m_animator.SetTrigger("Jump");
+		}
+	}
 
 	IEnumerator TryAttack(string animName, float delay = 0.1f)
 	{
@@ -191,5 +227,4 @@ public class Player : MonoBehaviour
 
 		m_myAttackHit.SetActive(false);
 	}
-
 }
