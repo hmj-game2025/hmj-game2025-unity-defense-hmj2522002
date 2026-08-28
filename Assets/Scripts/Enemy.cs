@@ -6,10 +6,72 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
 	[SerializeField] NavMeshAgent m_agent;
-	[SerializeField] Transform m_target;
+	[SerializeField] ParticleSystem m_damageHit;
+	[SerializeField] float m_attackSpan;
+	[SerializeField] float m_attackPower;
+	[SerializeField] float m_moveSpeed;
+	[SerializeField] float m_hp;
+	[SerializeField] float m_playerChaseTime;
+
+	const float InvincibleTime = 0.05f;
+
+	Transform m_player;
+	Transform m_target;
+	float m_invincibleTime;
+
+	private void Awake()
+	{
+		m_player = Player.Instance.transform;
+		m_target = GameObject.FindWithTag("Player").transform;
+	}
+
+	private void Start()
+	{
+		m_agent.speed = m_moveSpeed;
+	}
 
 	private void Update()
 	{
 		m_agent.SetDestination(m_target.position);
+
+		if (m_invincibleTime > 0)
+		{
+			m_invincibleTime -= Time.deltaTime;
+		}
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.CompareTag("Attack"))
+		{
+			if (m_invincibleTime > 0)
+			{
+				return;
+			}
+
+			m_hp -= other.GetComponent<AttackPower>().Power;
+			m_invincibleTime = InvincibleTime;
+
+			m_damageHit.Play();
+
+			if (m_hp <= 0)
+			{
+				Destroy(gameObject);
+			}
+		}
+	}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.CompareTag("Attack"))
+		{
+			m_hp -= collision.gameObject.GetComponent<AttackPower>().Power;
+
+			if (m_hp <= 0)
+			{
+				Destroy(gameObject);
+			}
+		}
+
 	}
 }

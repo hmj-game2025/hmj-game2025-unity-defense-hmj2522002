@@ -7,12 +7,15 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-	[SerializeField] GameObject m_myAttackHit;
+	[SerializeField] GameObject m_attackHit;
+	[SerializeField] GameObject m_spinAttackHit;
 	[SerializeField] GameObject m_sword;
 	[SerializeField] GameObject m_playerObj;
 	[SerializeField] float m_boostWalkSpeed;		// 速度収束量
 	[SerializeField] float m_boostMagnificationAir;	// 空中での収束率
-	[SerializeField] float m_maxWalkSpeed;			// サイコウソク
+	[SerializeField] float m_maxWalkSpeed;          // サイコウソク
+	[SerializeField] float m_attackDamage;			// 通常攻撃でのダメージ量
+	[SerializeField] float m_spinAttackDamage;		// 回転攻撃での一発ごとのダメージ量
 	[SerializeField] float m_swordEffectDelay;      // 斬撃のエフェクトが描画されるまでの時間
 	[SerializeField] float m_comboAttackDelay;      // 連続攻撃ができる猶予時間
 	[SerializeField] float m_cantAttackDuration;    // 攻撃入力を受け付けない時間
@@ -47,6 +50,7 @@ public class Player : MonoBehaviour
 	float m_stunTimeLeft;
 	float m_speedY;
 	float m_spinAttackTime;
+	float m_prevSpinAttackTime;
 	int m_totalScore;
 	int m_comboAmount;
 	bool m_isComboAttackReady;
@@ -56,11 +60,26 @@ public class Player : MonoBehaviour
 	bool m_canControll;
 	bool m_isPressedShield;
 	bool m_canBasicMove;	// 移動、ジャンプの基本的な動作ができるか
-	bool m_canTotalMove;	// 攻撃なども含めたすべての動作ができるか
+	bool m_canTotalMove;    // 攻撃なども含めたすべての動作ができるか
 
+	enum AttackType
+	{
+		None,
+		Attack,
+		SpinAttack
+	}
+
+	static Player m_instance;
+
+	public static Player Instance => m_instance;
 
 	private void Awake()
 	{
+		if (m_instance == null)
+		{
+			m_instance = this;
+		}
+
 		m_controller = GetComponent<CharacterController>();
 		m_animator = m_playerObj.GetComponent<Animator>();
 	}
@@ -69,6 +88,16 @@ public class Player : MonoBehaviour
 	void Start()
     {
 		m_camera = Camera.Instance;
+
+		for (int i = 0; i < m_attackHit.transform.childCount; i++)
+		{
+			m_attackHit.transform.GetChild(i).GetComponent<AttackPower>().Power = m_attackDamage;
+		}
+
+		for (int i = 0; i < m_spinAttackHit.transform.childCount; i++)
+		{
+			m_spinAttackHit.transform.GetChild(i).GetComponent<AttackPower>().Power = m_spinAttackDamage;
+		}
 	}
 
     // Update is called once per frame
@@ -143,7 +172,21 @@ public class Player : MonoBehaviour
 		if (0 < m_spinAttackTime)
 		{
 			m_spinAttackTime -= SpinSpeed * m_spinAttacksSpinAmount * Time.deltaTime;
+
+			if (m_spinAttackTime % 360 > m_prevSpinAttackTime % 360)
+			{
+				if (m_prevSpinAttackTime == 360.0f * m_spinAttacksSpinAmount)
+				{
+					StartCoroutine(TryAttack(AttackType.SpinAttack, "Attack02"));
+				}
+				else
+				{
+					StartCoroutine(TryAttack(AttackType.SpinAttack));
+				}
+			}
 		}
+
+		m_prevSpinAttackTime = m_spinAttackTime;
 
 		if (0 < m_spinAttackTime)
 		{
@@ -238,7 +281,7 @@ public class Player : MonoBehaviour
 
 		if (m_comboAmount % 2 == 1)
 		{
-			StartCoroutine(TryAttack("Attack01", m_swordEffectDelay, m_attackHitKeepDuration));
+			StartCoroutine(TryAttack(AttackType.Attack, "Attack01", m_swordEffectDelay, m_attackHitKeepDuration));
 		}
 		else
 		{
@@ -247,16 +290,15 @@ public class Player : MonoBehaviour
 				m_comboAmount = 0;
 
 				m_spinAttackTime = 360.0f * m_spinAttacksSpinAmount;
+				m_prevSpinAttackTime = m_spinAttackTime;
 				m_startSpinAttackRotation = transform.eulerAngles;
 
 				// コンボが途切れる長さにし、さらに連続で攻撃できないようにする
 				m_attackedDelay = -m_cantMoveAfterSpinAttackTime;
-
-				StartCoroutine(TryAttack("Attack02", m_swordEffectDelay, m_attackHitKeepDuration * 3.0f));
 			}
 			else
 			{
-				StartCoroutine(TryAttack("Attack02", m_swordEffectDelay, m_attackHitKeepDuration));
+				StartCoroutine(TryAttack(AttackType.Attack, "Attack02", m_swordEffectDelay, m_attackHitKeepDuration));
 			}
 		}
 	}
@@ -285,25 +327,36 @@ public class Player : MonoBehaviour
 		m_rightStickControll = callbackContext.ReadValue<Vector2>();
 	}
 
-	IEnumerator TryAttack(string animName, float delay = 0.1f, float keep = 0.1f)
+	IEnumerator TryAttack(AttackType type, string animName = "", float delay = 0.1f, float keep = 0.1f)
 	{
-		StartCoroutine(AttackHitBox(keep));
 
-		m_animator.SetTrigger(animName);
+		if (type == AttackType.Attack)
+		{
+			StartCoroutine(AttackHitBox(m_attackHit, keep));
+		}
+		else if (type == AttackType.SpinAttack)
+		{
+			StartCoroutine(AttackHitBox(m_spinAttackHit, keep));
+		}
 
-		yield return new WaitForSeconds(delay);
+		if (animName != "")
+		{
+			m_animator.SetTrigger(animName);
 
-		m_sword.transform.Find("SwordEffect").GetComponent<ParticleSystem>().Play();
+			yield return new WaitForSeconds(delay);
+
+			m_sword.transform.Find("SwordEffect").GetComponent<ParticleSystem>().Play();
+		}
 	}
 
-	IEnumerator AttackHitBox(float keep = 0.1f)
+	IEnumerator AttackHitBox(GameObject hitBox, float keep = 0.1f)
 	{
 		yield return new WaitForSeconds(m_attackStartDuration);
 
-		m_myAttackHit.SetActive(true);
+		hitBox.SetActive(true);
 
 		yield return new WaitForSeconds(keep);
 
-		m_myAttackHit.SetActive(false);
+		hitBox.SetActive(false);
 	}
 }
