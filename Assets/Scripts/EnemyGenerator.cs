@@ -1,11 +1,39 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
 {
+	enum Elemental	
+	{
+		None,
+		Fire,
+		Aqua,
+		Ice,
+		Elec,
+		Wind,
+		Glow,
+		Dark,
+	}
+
 	[SerializeField] GameObject m_enemy;
-	[SerializeField] float m_span;
+
+	[Serializable] 
+	class SpawnInfo
+	{
+		public Vector3 position;
+		public Elemental elemental;
+		public float delay;
+	}
+
+	[Serializable]
+	class Wave
+	{
+		public List<SpawnInfo> m_spawnInfos;
+	}
+
+	[SerializeField] List<Wave> m_waves;
 
 	float m_delta;
 
@@ -19,11 +47,5 @@ public class EnemyGenerator : MonoBehaviour
     void Update()
     {
 		m_delta += Time.deltaTime;
-
-		if (m_delta > m_span)
-		{
-			m_delta = 0;
-			Instantiate(m_enemy);
-		}
     }
 }

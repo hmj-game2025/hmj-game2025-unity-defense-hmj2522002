@@ -21,27 +21,30 @@ public class Enemy : MonoBehaviour
 
 	private void Awake()
 	{
-		m_player = Player.Instance.transform;
-		m_target = GameObject.FindWithTag("Player").transform;
+		m_target = GameObject.FindWithTag("Castle").transform;
 	}
 
 	private void Start()
 	{
 		m_agent.speed = m_moveSpeed;
+		m_player = Player.Instance.transform;
 	}
 
 	private void Update()
 	{
-		m_agent.SetDestination(m_target.position);
-
 		if (m_invincibleTime > 0)
 		{
 			m_invincibleTime -= Time.deltaTime;
 		}
+		Debug.Log(m_target.position);
+
+		m_agent.SetDestination(m_target.position);
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
+		Debug.Log("TriggerHit");
+
 		if (other.gameObject.CompareTag("Attack"))
 		{
 			if (m_invincibleTime > 0)
@@ -63,6 +66,8 @@ public class Enemy : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
+		Debug.Log("CollisionHit");
+
 		if (collision.gameObject.CompareTag("Attack"))
 		{
 			m_hp -= collision.gameObject.GetComponent<AttackPower>().Power;

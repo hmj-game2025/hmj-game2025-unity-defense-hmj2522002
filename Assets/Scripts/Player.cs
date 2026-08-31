@@ -118,8 +118,6 @@ public class Player : MonoBehaviour
 				m_moveXZ += m_leftStickControll.normalized * m_boostWalkSpeed * boostMagnification;
 			}
 
-			Debug.Log("Plus");
-
 			// 速度超過を防ぐため、最高速で止める
 			if (m_moveXZ.magnitude > m_leftStickControll.magnitude)
 			{
@@ -132,7 +130,6 @@ public class Player : MonoBehaviour
 			)
 		{
 			m_moveXZ -= m_moveXZ.normalized * m_boostWalkSpeed * boostMagnification;
-			Debug.Log("Minus");
 
 			// ムーンウォークを防ぐために0で止める
 			if (m_moveXZ.magnitude < 0.05f)
@@ -239,8 +236,6 @@ public class Player : MonoBehaviour
 
 	public void OnAttack(InputAction.CallbackContext callbackContext)
 	{
-		Debug.Log("Attacked");
-
 		if (m_attackedDelay < m_cantAttackDuration)
 		{
 			return;
