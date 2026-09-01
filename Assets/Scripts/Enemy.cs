@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
 
 	Transform m_player;
 	Transform m_target;
+	EnemyGenerator m_generator;
 	float m_invincibleTime;
 
 	private void Awake()
@@ -28,6 +29,7 @@ public class Enemy : MonoBehaviour
 	{
 		m_agent.speed = m_moveSpeed;
 		m_player = Player.Instance.transform;
+		m_generator = EnemyGenerator.Instance;
 	}
 
 	private void Update()
@@ -39,6 +41,13 @@ public class Enemy : MonoBehaviour
 		Debug.Log(m_target.position);
 
 		m_agent.SetDestination(m_target.position);
+	}
+
+	void OnDeath()
+	{
+		m_generator.EnemyDeath();
+
+		Destroy(gameObject);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -59,24 +68,9 @@ public class Enemy : MonoBehaviour
 
 			if (m_hp <= 0)
 			{
-				Destroy(gameObject);
+				OnDeath();
 			}
 		}
 	}
 
-	private void OnCollisionEnter(Collision collision)
-	{
-		Debug.Log("CollisionHit");
-
-		if (collision.gameObject.CompareTag("Attack"))
-		{
-			m_hp -= collision.gameObject.GetComponent<AttackPower>().Power;
-
-			if (m_hp <= 0)
-			{
-				Destroy(gameObject);
-			}
-		}
-
-	}
 }
