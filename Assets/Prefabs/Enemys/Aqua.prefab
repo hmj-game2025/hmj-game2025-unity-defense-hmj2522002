@@ -5086,13 +5086,24 @@ MonoBehaviour:
   m_agent: {fileID: 2947972143809450340}
   m_damageHit: {fileID: 2626117226780629158}
   m_attackObj: {fileID: 1580483103496614821, guid: da4ce1f85469aa64c9c4219ea874249e, type: 3}
-  m_attackOffset: {x: 0, y: 0.2, z: 0}
+  m_attackHitBox: {fileID: 0}
   m_attackSpan: 3
   m_attackReach: 4
   m_attackPower: 0.5
   m_moveSpeed: 1.5
   m_hp: 14
   m_playerChaseTime: 2
+  m_attackStatus:
+  - startForwardOffset: 0
+    angle: {x: 0, y: 0, z: 0, w: 0}
+    attackAmount: 3
+    attackWaitTime: 0.1
+    attackSpan: 0
+    attackHitStayTime: 0.2
+    knockBackHorizontalPower: 10
+    knockBackVerticalPower: 8
+    attackPower: 0.6
+    attackRadius: 1.5
 --- !u!195 &2947972143809450340
 NavMeshAgent:
   m_ObjectHideFlags: 0

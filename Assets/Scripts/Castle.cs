@@ -5,6 +5,7 @@ using UnityEngine;
 public class Castle : MonoBehaviour
 {
 	[SerializeField] float m_maxHp;
+	[SerializeField] BoxCollider m_hitBox;
 
 	float m_hp;
 
@@ -39,5 +40,13 @@ public class Castle : MonoBehaviour
 	public float GetHp01()
 	{
 		return m_hp / m_maxHp;
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.CompareTag("Damage"))
+		{
+			Damage(other.GetComponent<EnemyAttack>().AttackPower);
+		}
 	}
 }

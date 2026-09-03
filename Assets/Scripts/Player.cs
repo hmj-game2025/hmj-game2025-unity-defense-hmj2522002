@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
 	[SerializeField] float m_moveHorizontalSpeed;   // 通常時の船の横移動量
 	[SerializeField] float m_jumpPower;				// ジャンプ力
 	[SerializeField] float m_gravityScale;          // 落下速度
+	[SerializeField] float m_minStunTime;			// スタンの最小時間
 	[SerializeField] int m_spinAttacksSpinAmount;   // 回転攻撃の回転数
 
 	const float SpinSpeed = 800.0f;
@@ -36,6 +37,7 @@ public class Player : MonoBehaviour
 	CharacterController m_controller;
 	Vector3 m_startSpinAttackRotation;
 	Vector3 m_totalMove;
+	Vector3 m_stunMove;
 	Vector2 m_moveXZ;
 	Vector2 m_prevMoveXZ;
 	Vector2 m_leftStickControll;
@@ -51,6 +53,7 @@ public class Player : MonoBehaviour
 	float m_speedY;
 	float m_spinAttackTime;
 	float m_prevSpinAttackTime;
+	float m_stunElapsedTime;
 	int m_totalScore;
 	int m_comboAmount;
 	bool m_isComboAttackReady;
@@ -61,6 +64,7 @@ public class Player : MonoBehaviour
 	bool m_isPressedShield;
 	bool m_canBasicMove;	// 移動、ジャンプの基本的な動作ができるか
 	bool m_canTotalMove;    // 攻撃なども含めたすべての動作ができるか
+	bool m_isStun;
 
 	enum AttackType
 	{
@@ -110,10 +114,12 @@ public class Player : MonoBehaviour
 
 		m_canBasicMove = m_comboAttackDelay < m_attackedDelay;
 
+		m_canTotalMove = !m_isStun;
+
 		// 縦横移動 /////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (m_moveXZ.magnitude <= m_leftStickControll.magnitude)
 		{
-			if (m_canBasicMove)
+			if (m_canBasicMove && m_canTotalMove)
 			{
 				m_moveXZ += m_leftStickControll.normalized * m_boostWalkSpeed * boostMagnification;
 			}
@@ -126,7 +132,8 @@ public class Player : MonoBehaviour
 		}
 		if (m_moveXZ.magnitude > m_leftStickControll.magnitude ||
 			m_leftStickControll.magnitude <= 0 ||
-			!m_canBasicMove
+			!m_canBasicMove ||
+			!m_canTotalMove
 			)
 		{
 			m_moveXZ -= m_moveXZ.normalized * m_boostWalkSpeed * boostMagnification;
@@ -207,6 +214,27 @@ public class Player : MonoBehaviour
 			m_camera.ZoomOut();
 		}
 
+		// スタン時 /////////////////////////////////////////////////////////////////////////////////////////////////////
+		if (m_isStun)
+		{
+			m_stunElapsedTime += Time.deltaTime;
+
+			if (m_controller.isGrounded)
+			{
+				if (m_stunElapsedTime > m_minStunTime)
+				{
+					m_isStun = false;
+					m_animator.SetBool("IsStun", false);
+				}
+			}
+			else
+			{
+				Vector3 stunMove = m_stunMove * Time.deltaTime;
+
+				m_controller.Move(stunMove);
+			}
+		}
+
 		// 接地判定 /////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (m_controller.isGrounded)
 		{
@@ -245,6 +273,10 @@ public class Player : MonoBehaviour
 			return;
 		}
 		if (!m_controller.isGrounded)
+		{
+			return;
+		}
+		if (!m_canTotalMove)
 		{
 			return;
 		}
@@ -308,6 +340,10 @@ public class Player : MonoBehaviour
 		{
 			return;
 		}
+		if (!m_canTotalMove)
+		{
+			return;
+		}
 
 		if (m_controller.isGrounded)
 		{
@@ -353,5 +389,30 @@ public class Player : MonoBehaviour
 		yield return new WaitForSeconds(keep);
 
 		hitBox.SetActive(false);
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.CompareTag("Damage"))
+		{
+			EnemyAttack enemyAttack = other.GetComponent<EnemyAttack>();
+
+			if (enemyAttack)
+			{
+				Vector3 rota = (transform.position - other.transform.position).normalized;
+
+				rota.x *= enemyAttack.KnockBackHorizontalPower;
+				rota.z *= enemyAttack.KnockBackHorizontalPower;
+
+				m_speedY = enemyAttack.KnockBackVerticalPower;
+
+				m_stunMove = new(rota.x, 0, rota.z);
+
+				m_animator.SetTrigger("Damaged");
+				m_animator.SetBool("IsStun", true);
+
+				m_isStun = true;
+			}
+		}
 	}
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3065908772374085033}
   - component: {fileID: 7718655499106616802}
   - component: {fileID: 4019255796285997502}
+  - component: {fileID: 5477912386223987006}
   m_Layer: 0
   m_Name: EnemyAttack_Around
   m_TagString: Damage
@@ -95,3 +96,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_attackPower: 1
+--- !u!114 &5477912386223987006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2728392400563491570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61506bc9a09e3145bbefa42462c1717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

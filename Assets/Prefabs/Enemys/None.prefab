@@ -253,14 +253,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_agent: {fileID: 2947972143809450340}
   m_damageHit: {fileID: 2626117226780629158}
-  m_attackObj: {fileID: 855058646129026298, guid: 086ae95606d822442b0a03d2956e9932, type: 3}
-  m_attackOffset: {x: 0, y: 0.2, z: 0}
+  m_attackObj: {fileID: 2728392400563491570, guid: 2e2ae1664079633468aa29093acba7d4, type: 3}
+  m_attackHitBox: {fileID: 0}
   m_attackSpan: 1.5
   m_attackReach: 1.5
   m_attackPower: 1
   m_moveSpeed: 2
   m_hp: 10
   m_playerChaseTime: 2
+  m_attackStatus:
+  - startForwardOffset: 1.5
+    angle: {x: 0, y: 0, z: 0, w: 0}
+    attackAmount: 1
+    attackSpan: 0
+    attackWaitTime: 0.25
+    attackHitStayTime: 1
+    knockBackHorizontalPower: 0
+    knockBackVerticalPower: 0
+    attackPower: 1
+    attackRadius: 1
 --- !u!195 &2947972143809450340
 NavMeshAgent:
   m_ObjectHideFlags: 0

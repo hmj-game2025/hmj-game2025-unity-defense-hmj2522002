@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_destroyedAttack: {fileID: 4564836814161176241, guid: 5ca0cec21d2114a4b8e6519d2cf4c7aa, type: 3}
+  m_hitBox: {fileID: 2728392400563491570, guid: 2e2ae1664079633468aa29093acba7d4, type: 3}
   m_hight: 5
 --- !u!135 &118515819967739656
 SphereCollider:

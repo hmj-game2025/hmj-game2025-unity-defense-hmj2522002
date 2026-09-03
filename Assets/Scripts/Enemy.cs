@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class Enemy : MonoBehaviour
 	[SerializeField] NavMeshAgent m_agent;
 	[SerializeField] ParticleSystem m_damageHit;
 	[SerializeField] GameObject m_attackObj;
-	[SerializeField] Vector3 m_attackOffset;
+	[SerializeField] GameObject m_attackHitBox;
 	[SerializeField] float m_attackSpan;
 	[SerializeField] float m_attackReach;
 	[SerializeField] float m_attackPower;
@@ -19,6 +20,25 @@ public class Enemy : MonoBehaviour
 	const float InvincibleTime = 0.05f;
 	const float StopDist = 0.5f;
 	const float MinimumDist = 1.05f;
+
+	[Serializable]
+	public class AttackStatus
+	{
+		public float startForwardOffset;
+		public Quaternion angle;
+		public int attackAmount;
+		public float attackWaitTime;
+		public float attackSpan;
+		public float attackHitStayTime;
+		public float knockBackHorizontalPower;
+		public float knockBackVerticalPower;
+		public float attackPower;
+		public float attackRadius;
+	}
+
+	[SerializeField] List<AttackStatus> m_attackStatus;
+
+	public List<AttackStatus> Status => m_attackStatus;
 
 	Castle m_castle;
 	Transform m_playerObj;
@@ -69,8 +89,6 @@ public class Enemy : MonoBehaviour
 				m_attackWaitTime = m_attackSpan;
 
 				StartCoroutine(Attack());
-
-				m_castle.Damage(m_attackPower);
 			}
 		}
 	}
@@ -88,23 +106,37 @@ public class Enemy : MonoBehaviour
 
 		if (!m_attackObj)
 		{
-			yield return 0;
+			yield break;
 		}
 
-		GameObject go = Instantiate(m_attackObj);
-		go.transform.position = transform.position;
-		go.transform.rotation = transform.rotation;
+		GameObject obj = Instantiate(m_attackObj, transform.position, transform.rotation);
 
-		EnemyBullet bullet = go.GetComponent<EnemyBullet>();
+		EnemyBullet bullet = obj.GetComponent<EnemyBullet>();
 		if (bullet != null)
 		{
 			bullet.SetVelocity(transform.forward, m_attackReach);
+			bullet.BulletFromEnemy = this;
 		}
 
-		AttackPower power = go.GetComponent<AttackPower>();
-		if (power != null)
-		{
+		EnemyAttack attack = obj.GetComponent<EnemyAttack>();
 
+		if (attack != null)
+		{
+			attack.AttackFromEnemy = this;
+		}
+
+		if (!m_attackHitBox)
+		{
+			yield break;
+		}
+
+		GameObject hit = Instantiate(m_attackHitBox, transform.position, transform.rotation);
+
+		attack = hit.GetComponent<EnemyAttack>();
+
+		if (attack != null)
+		{
+			attack.AttackFromEnemy = this;
 		}
 	}
 
