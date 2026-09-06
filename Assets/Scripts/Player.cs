@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
 	Camera m_camera;
 	Animator m_animator;
 	CharacterController m_controller;
+	PauseMenu m_pause;
 	Vector3 m_startSpinAttackRotation;
 	Vector3 m_totalMove;
 	Vector3 m_stunMove;
@@ -92,6 +93,7 @@ public class Player : MonoBehaviour
 	void Start()
     {
 		m_camera = Camera.Instance;
+		m_pause = PauseMenu.Instance;
 
 		for (int i = 0; i < m_attackHit.transform.childCount; i++)
 		{
@@ -107,6 +109,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (m_pause.IsPause)
+		{
+			return;
+		}
+
 		m_attackedDelay += Time.deltaTime;
 
 		float boostMagnification = 
@@ -280,6 +287,10 @@ public class Player : MonoBehaviour
 		{
 			return;
 		}
+		if (m_pause.IsPause)
+		{
+			return;
+		}
 		//if (m_isShield)
 		//{
 		//	return;
@@ -355,7 +366,26 @@ public class Player : MonoBehaviour
 
 	public void OnCamera(InputAction.CallbackContext callbackContext)
 	{
+		if (m_pause.IsPause)
+		{
+			return;
+		}
+
 		m_rightStickControll = callbackContext.ReadValue<Vector2>();
+	}
+
+	public void OnPause(InputAction.CallbackContext callbackContext)
+	{
+		if (!callbackContext.performed)
+		{
+			return;
+		}
+		if (m_pause.IsPause)
+		{
+			return;
+		}
+
+		m_pause.OpenMenu();
 	}
 
 	IEnumerator TryAttack(AttackType type, string animName = "", float delay = 0.1f, float keep = 0.1f)

@@ -20,6 +20,8 @@ public class Enemy : MonoBehaviour
 	const float InvincibleTime = 0.05f;
 	const float StopDist = 0.5f;
 	const float MinimumDist = 1.05f;
+	const float StunTime = 0.1f;
+	const float DeathStunTime = 0.5f;
 
 	[Serializable]
 	public class AttackStatus
@@ -46,8 +48,12 @@ public class Enemy : MonoBehaviour
 	Transform m_target;
 	EnemyGenerator m_generator;
 	Animator m_animator;
-	float m_invincibleTime;
-	float m_attackWaitTime;
+	float m_invincibleTimeLeft;
+	float m_attackWaitTimeLeft;
+	float m_playerChaseTimeLeft;
+	float m_stunTimeLeft;
+	float m_baseSpeed;
+	bool m_isDeath;
 
 	private void Awake()
 	{
@@ -63,43 +69,66 @@ public class Enemy : MonoBehaviour
 		m_playerObj = Player.Instance.transform;
 		m_generator = EnemyGenerator.Instance;
 		m_castle = Castle.Instance;
+		m_baseSpeed = m_moveSpeed;
 	}
 
 	private void Update()
 	{
-		if (m_invincibleTime > 0)
+		// 残り時間系 ///////////////////////////////////////////////////////////////////////////////////////////////////
+		if (m_invincibleTimeLeft > 0)
 		{
-			m_invincibleTime -= Time.deltaTime;
+			m_invincibleTimeLeft -= Time.deltaTime;
+		}
+		if (m_attackWaitTimeLeft > 0)
+		{
+			m_attackWaitTimeLeft -= Time.deltaTime;
+		}
+		if (m_stunTimeLeft > 0)
+		{
+			m_stunTimeLeft -= Time.deltaTime;
+		}
+		if (m_playerChaseTimeLeft > 0)
+		{
+			m_playerChaseTimeLeft -= Time.deltaTime;
 		}
 
-		if (m_attackWaitTime > 0)
+		// 追尾するターゲットを選択する /////////////////////////////////////////////////////////////////////////////////
+		if (m_playerChaseTimeLeft > 0)
 		{
-			m_attackWaitTime -= Time.deltaTime;
+			m_target = m_playerObj.transform;
+		}
+		else
+		{
+			m_target = m_castleObj.transform;
 		}
 
 		m_agent.SetDestination(m_target.position);
 
+		// 攻撃 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 		if ((m_target.position - transform.position).magnitude < m_attackReach)
 		{
-
-			if (m_attackWaitTime <= 0)
+			if (m_attackWaitTimeLeft <= 0)
 			{
 				Debug.Log(gameObject.name.ToString() + "_actived");
 				m_animator.SetTrigger("Attack");
-				m_attackWaitTime = m_attackSpan;
+				m_attackWaitTimeLeft = m_attackSpan;
 
 				StartCoroutine(Attack());
 			}
 		}
+
+		m_animator.SetBool("IsStun", m_stunTimeLeft > 0);
 	}
 
-	void OnDeath()
+	// 倒されたとき /////////////////////////////////////////////////////////////////////////////////////////////////////
+	void OnDeath(float delay = 0.0f)
 	{
 		m_generator.EnemyDeath();
 
-		Destroy(gameObject);
+		Destroy(gameObject, delay);
 	}
 
+	// ターゲットに攻撃 /////////////////////////////////////////////////////////////////////////////////////////////////
 	IEnumerator Attack(float delay = 0.0f)
 	{
 		yield return new WaitForSeconds(delay);
@@ -111,13 +140,16 @@ public class Enemy : MonoBehaviour
 
 		GameObject obj = Instantiate(m_attackObj, transform.position, transform.rotation);
 
+		// 弾を発射して攻撃するタイプ
 		EnemyBullet bullet = obj.GetComponent<EnemyBullet>();
+
 		if (bullet != null)
 		{
 			bullet.SetVelocity(transform.forward, m_attackReach);
 			bullet.BulletFromEnemy = this;
 		}
 
+		// 直接殴って攻撃するタイプ
 		EnemyAttack attack = obj.GetComponent<EnemyAttack>();
 
 		if (attack != null)
@@ -134,6 +166,7 @@ public class Enemy : MonoBehaviour
 
 		attack = hit.GetComponent<EnemyAttack>();
 
+		// 攻撃先の敵を自分に指定する（攻撃の情報を伝えるため）
 		if (attack != null)
 		{
 			attack.AttackFromEnemy = this;
@@ -144,21 +177,33 @@ public class Enemy : MonoBehaviour
 	{
 		Debug.Log("TriggerHit");
 
+		// プレイヤーからの攻撃を受けたとき /////////////////////////////////////////////////////////////////////////////
 		if (other.gameObject.CompareTag("Attack"))
 		{
-			if (m_invincibleTime > 0)
+			if (m_invincibleTimeLeft > 0)
 			{
 				return;
 			}
 
 			m_hp -= other.GetComponent<AttackPower>().Power;
-			m_invincibleTime = InvincibleTime;
+			m_invincibleTimeLeft = InvincibleTime;
 
 			m_damageHit.Play();
 
+			// スタンする時間の指定
 			if (m_hp <= 0)
 			{
-				OnDeath();
+				if (!m_isDeath)
+				{
+					m_stunTimeLeft = DeathStunTime;
+					OnDeath(DeathStunTime);
+					m_isDeath = true;
+				}
+			}
+			else
+			{
+				m_stunTimeLeft = StunTime;
+				m_playerChaseTimeLeft = m_playerChaseTime;
 			}
 		}
 	}
