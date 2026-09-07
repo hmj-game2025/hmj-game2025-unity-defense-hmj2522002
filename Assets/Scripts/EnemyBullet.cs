@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Enemy;
 
 public class EnemyBullet : MonoBehaviour
 {
@@ -8,8 +9,10 @@ public class EnemyBullet : MonoBehaviour
 	[SerializeField] GameObject m_hitBox;
 	[SerializeField] float m_hight;
 
-	Enemy m_parentEnemy;
+	List<Enemy.AttackStatus> m_attackStatus;
+    Enemy m_parentEnemy;
 	Rigidbody m_rigidbody;
+	Quaternion m_angle;
 	float m_power;
 	float m_knockBackHorizontalPower;
 	float m_knockBackVerticalPower;
@@ -19,7 +22,12 @@ public class EnemyBullet : MonoBehaviour
 		set { m_parentEnemy = value; }
 	}
 
-	private void Awake()
+	public Quaternion Angle
+	{
+        set { m_angle = value; }
+    }
+
+    private void Awake()
 	{
 		m_rigidbody = GetComponent<Rigidbody>();
 	}
@@ -27,7 +35,7 @@ public class EnemyBullet : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        
+		m_attackStatus = m_parentEnemy.Status;
     }
 
     // Update is called once per frame
@@ -43,7 +51,7 @@ public class EnemyBullet : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (m_rigidbody.velocity.y > 0)
+		if (m_rigidbody.velocity.y > 0.01f)
 		{
 			return;
 		}
@@ -59,16 +67,11 @@ public class EnemyBullet : MonoBehaviour
 
 		if (attack != null)
 		{
-			attack.AttackFromEnemy = m_parentEnemy;
+			attack.AttackFromEnemyStatus = m_attackStatus;
 			attack.ClonedFromBullet = true;
-			//attack.AttackAmount = 1;
-			//attack.Angle = Quaternion.Euler(transform.forward);
-			//attack.AttackWaitTime = 0.5f;
-			//attack.AttackHitStayTime = 1.0f;
-			//attack.KnockBackHorizontalPower = m_knockBackHorizontalPower;
-			//attack.KnockBackVerticalPower = m_knockBackVerticalPower;
-			//attack.AttackPower = m_power;
-		}
+			attack.Position = transform.position;
+			attack.Angle = m_angle;
+        }
 
 
 		Destroy(gameObject);

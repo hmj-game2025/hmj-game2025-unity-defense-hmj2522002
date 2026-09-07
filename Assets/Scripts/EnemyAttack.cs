@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyAttack : MonoBehaviour
 {
 	SphereCollider m_hitBox;
-	Enemy m_parentEnemy;
+	List<Enemy.AttackStatus> m_parentEnemyStatus;
 	Quaternion m_angle;
 	int m_attackAmount = 1;
 	int m_runningCoroutines;
@@ -21,6 +21,10 @@ public class EnemyAttack : MonoBehaviour
 	float m_cullentToSwitchedTime;
 	bool m_clonedFromBullet;
 
+	public Vector3 Position
+	{
+		set { transform.position = value; }
+	}
 	public Quaternion Angle
 	{
 		set { m_angle = value; }
@@ -57,9 +61,9 @@ public class EnemyAttack : MonoBehaviour
 		set { m_attackPower = value; }
 	}
 
-	public Enemy AttackFromEnemy
+	public  List<Enemy.AttackStatus> AttackFromEnemyStatus
 	{
-		set { m_parentEnemy = value; }
+		set { m_parentEnemyStatus = value; }
 	}
 
 	public bool ClonedFromBullet
@@ -77,9 +81,8 @@ public class EnemyAttack : MonoBehaviour
 	{
 		m_hitBox.enabled = false;
 
-		Enemy.AttackStatus stats = m_parentEnemy.Status[m_attackStatusIndex];
+		Enemy.AttackStatus stats = m_parentEnemyStatus[m_attackStatusIndex];
 
-		m_angle = Quaternion.Euler(m_parentEnemy.gameObject.transform.forward);
 		m_attackAmount = stats.attackAmount;
 		m_attackWaitTime = stats.attackWaitTime;
 		m_attackHitStayTime = stats.attackHitStayTime;
@@ -93,7 +96,6 @@ public class EnemyAttack : MonoBehaviour
 		// 敵から直接生成されたダメージ判定なら、敵の位置に判定を生成する
 		if (!m_clonedFromBullet)
 		{
-			transform.position = m_parentEnemy.transform.position;
 			transform.position += transform.forward * m_forwardOffset;
 		}
 

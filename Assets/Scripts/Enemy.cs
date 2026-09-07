@@ -7,7 +7,8 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
 	[SerializeField] NavMeshAgent m_agent;
-	[SerializeField] ParticleSystem m_damageHit;
+	[SerializeField] GameObject m_damageObj;
+	[SerializeField] GameObject m_deathObj;
 	[SerializeField] GameObject m_attackObj;
 	[SerializeField] GameObject m_attackHitBox;
 	[SerializeField] float m_attackSpan;
@@ -54,6 +55,7 @@ public class Enemy : MonoBehaviour
 	float m_stunTimeLeft;
 	float m_baseSpeed;
 	bool m_isDeath;
+	bool m_isTargetInReach;
 
 	private void Awake()
 	{
@@ -70,6 +72,9 @@ public class Enemy : MonoBehaviour
 		m_generator = EnemyGenerator.Instance;
 		m_castle = Castle.Instance;
 		m_baseSpeed = m_moveSpeed;
+
+		// 召喚されるときのパーティクル
+		Instantiate(m_deathObj, transform.position, transform.rotation);
 	}
 
 	private void Update()
@@ -105,9 +110,15 @@ public class Enemy : MonoBehaviour
 		m_agent.SetDestination(m_target.position);
 
 		// 攻撃 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if ((m_target.position - transform.position).magnitude < m_attackReach)
+		m_isTargetInReach = (m_target.position - transform.position).magnitude < m_attackReach;
+		
+		if (m_isTargetInReach)
 		{
-			if (m_attackWaitTimeLeft <= 0)
+			Vector3 angle = m_target.position - transform.position;
+
+			transform.LookAt(m_target);
+
+            if (m_attackWaitTimeLeft <= 0)
 			{
 				Debug.Log(gameObject.name.ToString() + "_actived");
 				m_animator.SetTrigger("Attack");
@@ -115,6 +126,17 @@ public class Enemy : MonoBehaviour
 
 				StartCoroutine(Attack());
 			}
+		}
+
+		// スピード調整 /////////////////////////////////////////////////////////////////////////////////////////////////
+		// 射程範囲内にターゲットがあるかスタンしている時にスピードをゼロにしている
+		if (m_isTargetInReach || m_stunTimeLeft > 0)
+		{
+			m_agent.speed = 0.0f;
+		}
+		else
+		{
+			m_agent.speed = m_baseSpeed;
 		}
 
 		m_animator.SetBool("IsStun", m_stunTimeLeft > 0);
@@ -128,8 +150,16 @@ public class Enemy : MonoBehaviour
 		Destroy(gameObject, delay);
 	}
 
-	// ターゲットに攻撃 /////////////////////////////////////////////////////////////////////////////////////////////////
-	IEnumerator Attack(float delay = 0.0f)
+    private void OnDestroy()
+    {
+		if (m_isDeath)
+		{
+			Instantiate(m_deathObj, transform.position, transform.rotation);
+		}
+    }
+
+    // ターゲットに攻撃 /////////////////////////////////////////////////////////////////////////////////////////////////
+    IEnumerator Attack(float delay = 0.0f)
 	{
 		yield return new WaitForSeconds(delay);
 
@@ -147,14 +177,15 @@ public class Enemy : MonoBehaviour
 		{
 			bullet.SetVelocity(transform.forward, m_attackReach);
 			bullet.BulletFromEnemy = this;
-		}
+            bullet.Angle = Quaternion.Euler(gameObject.transform.forward);
+        }
 
-		// 直接殴って攻撃するタイプ
-		EnemyAttack attack = obj.GetComponent<EnemyAttack>();
+        // 直接殴って攻撃するタイプ
+        EnemyAttack attack = obj.GetComponent<EnemyAttack>();
 
 		if (attack != null)
 		{
-			attack.AttackFromEnemy = this;
+			attack.AttackFromEnemyStatus = m_attackStatus;
 		}
 
 		if (!m_attackHitBox)
@@ -169,7 +200,7 @@ public class Enemy : MonoBehaviour
 		// 攻撃先の敵を自分に指定する（攻撃の情報を伝えるため）
 		if (attack != null)
 		{
-			attack.AttackFromEnemy = this;
+			attack.AttackFromEnemyStatus = m_attackStatus;
 		}
 	}
 
@@ -188,7 +219,7 @@ public class Enemy : MonoBehaviour
 			m_hp -= other.GetComponent<AttackPower>().Power;
 			m_invincibleTimeLeft = InvincibleTime;
 
-			m_damageHit.Play();
+			Instantiate(m_damageObj, transform.position, transform.rotation);
 
 			// スタンする時間の指定
 			if (m_hp <= 0)

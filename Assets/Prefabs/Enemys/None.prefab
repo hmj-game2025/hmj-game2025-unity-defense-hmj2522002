@@ -252,7 +252,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_agent: {fileID: 2947972143809450340}
-  m_damageHit: {fileID: 2626117226780629158}
+  m_damageObj: {fileID: 7845074005629772271, guid: a20dd3d076a61d646b661e70a41dd62f, type: 3}
+  m_deathObj: {fileID: 7685282342123172979, guid: e0ddab73b799cec42b1cd8dfc7a58926, type: 3}
   m_attackObj: {fileID: 2728392400563491570, guid: 2e2ae1664079633468aa29093acba7d4, type: 3}
   m_attackHitBox: {fileID: 0}
   m_attackSpan: 1.5
