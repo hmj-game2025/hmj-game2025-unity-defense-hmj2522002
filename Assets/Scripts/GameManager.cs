@@ -4,9 +4,36 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+	[SerializeField] SceneType m_sceneType;
 
+	static GameManager m_instance;
+
+	public SceneType ThisSceneType
+	{
+		get { return m_sceneType; }
+		set { m_sceneType = value; }
+	}
+	public static GameManager Instance => m_instance;
+
+	public enum SceneType
+	{
+		Title,
+		StageSelect,
+		Game,
+		Result
+	}
 	private void Awake()
 	{
+		if (m_instance != null && m_instance != this)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
+		m_instance = this;
+
+		DontDestroyOnLoad(gameObject);
+
 		Application.targetFrameRate = 120;
 	}
 

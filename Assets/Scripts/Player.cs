@@ -442,6 +442,7 @@ public class Player : MonoBehaviour
 				m_animator.SetBool("IsStun", true);
 
 				m_isStun = true;
+				m_stunElapsedTime = 0;
 			}
 		}
 	}
