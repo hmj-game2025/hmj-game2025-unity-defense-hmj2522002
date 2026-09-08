@@ -17,6 +17,7 @@ public class StageSelect : MonoBehaviour
 		public Vector3 position;
 		public string sceneName;
 		public List<Sprite> element;
+		public int timeBonus;
 	}
 
 	[SerializeField] GameObject m_elementIcon;
@@ -27,6 +28,7 @@ public class StageSelect : MonoBehaviour
 	[SerializeField] float m_iconDist;
 	[SerializeField] List<StageNameInfo> m_stages;
 
+	GameManager m_gameManager;
 	SceneChanger m_sceneChanger;
 	Vector2 m_leftStick;
 	Vector2 m_prevLeft;
@@ -46,8 +48,6 @@ public class StageSelect : MonoBehaviour
 		{
 			m_instance = this;
 		}
-
-		m_sceneChanger = SceneChanger.Instance;
 	}
 
 	// Start is called before the first frame update
@@ -57,6 +57,9 @@ public class StageSelect : MonoBehaviour
 		{
 			SceneManager.LoadScene("Title");
 		}
+
+		m_sceneChanger = SceneChanger.Instance;
+		m_gameManager = GameManager.Instance;
 
 		RefreshUis();
     }
@@ -133,7 +136,6 @@ public class StageSelect : MonoBehaviour
 		m_leftStick = callbackContext.ReadValue<Vector2>();
 	}
 
-
 	public void OnCollect(InputAction.CallbackContext callbackContext)
 	{
 		if (m_sceneChanger.IsFade)
@@ -141,6 +143,18 @@ public class StageSelect : MonoBehaviour
 			return;
 		}
 
+		m_gameManager.StageName = m_stages[m_nowCursor].stageName;
+
 		m_sceneChanger.StartChangeScene("Level_01", GameManager.SceneType.Game);
+	}
+
+	public void OnBack(InputAction.CallbackContext callbackContext)
+	{
+		if (m_sceneChanger.IsFade)
+		{
+			return;
+		}
+
+		m_sceneChanger.StartChangeScene("Title", GameManager.SceneType.Title);
 	}
 }

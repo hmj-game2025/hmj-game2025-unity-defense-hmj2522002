@@ -5088,12 +5088,14 @@ MonoBehaviour:
   m_deathObj: {fileID: 7685282342123172979, guid: e0ddab73b799cec42b1cd8dfc7a58926, type: 3}
   m_attackObj: {fileID: 1580483103496614821, guid: da4ce1f85469aa64c9c4219ea874249e, type: 3}
   m_attackHitBox: {fileID: 0}
+  m_enemyArrow: {fileID: 4503081018487701913, guid: 98d602d11399ff94bbfe8089a1220f1b, type: 3}
   m_attackSpan: 3
   m_attackReach: 4
   m_attackPower: 0.5
   m_moveSpeed: 1.5
   m_hp: 14
   m_playerChaseTime: 2
+  m_score: 300
   m_attackStatus:
   - startForwardOffset: 0
     angle: {x: 0, y: 0, z: 0, w: 0}

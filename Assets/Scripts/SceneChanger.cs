@@ -42,7 +42,6 @@ public class SceneChanger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		Debug.Log(m_isFade);
 		if (!m_isStartFadeOut && m_fadeTime <= 0)
 		{
 			m_isFade = false;

@@ -2802,6 +2802,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: e7beec2ce70b93f4aa2b2839f68ab68c, type: 3}
     - {fileID: 21300000, guid: 1ad21b470a3870448a352e879c15d5cc, type: 3}
     - {fileID: 21300000, guid: aec05fec50365ba47bf643b85a7f9661, type: 3}
+    timeBonus: 30000
   - stageName: "\u6CBF\u5CB8\u306E\u57CE"
     position: {x: -11, y: 3, z: 7}
     sceneName: Level_02
@@ -2811,6 +2812,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 105c260d2b14275439565a87783fdb17, type: 3}
     - {fileID: 21300000, guid: 1463bff837c5e12488030f6e0aeda165, type: 3}
     - {fileID: 21300000, guid: aec05fec50365ba47bf643b85a7f9661, type: 3}
+    timeBonus: 42000
   - stageName: "\u9AD8\u53F0\u306E\u57CE"
     position: {x: 3, y: 9, z: -7}
     sceneName: Level_03
@@ -2820,6 +2822,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: aec05fec50365ba47bf643b85a7f9661, type: 3}
     - {fileID: 21300000, guid: ba5c27a93be3e3544b57b62bd55248b9, type: 3}
     - {fileID: 21300000, guid: 8308b27914571b7499760e584fc52175, type: 3}
+    timeBonus: 60000
 --- !u!4 &1427028960
 Transform:
   m_ObjectHideFlags: 0
@@ -2897,7 +2900,19 @@ MonoBehaviour:
     m_ActionId: 2d11f093-567e-4390-a9af-4ab918e1dd9e
     m_ActionName: Menu/Select[/Keyboard/z,/Keyboard/k,/XInputControllerWindows/buttonSouth,/XInputControllerWindows/start,/Keyboard/enter]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1427028959}
+        m_TargetAssemblyTypeName: StageSelect, Assembly-CSharp
+        m_MethodName: OnBack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a5ca56ee-c123-4720-aafc-38add76c0d71
     m_ActionName: Menu/Back[/Keyboard/x,/Keyboard/j,/XInputControllerWindows/buttonEast]
   - m_PersistentCalls:

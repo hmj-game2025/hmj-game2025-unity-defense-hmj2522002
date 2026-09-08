@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
@@ -17,6 +18,7 @@ public class EnemyGenerator : MonoBehaviour
 		Dark,
 	}
 
+	[SerializeField] TextMeshProUGUI m_enemyAmount;
 	[SerializeField] float m_waitNextWaveTime;
 
 	[Serializable] 
@@ -36,9 +38,11 @@ public class EnemyGenerator : MonoBehaviour
 	[SerializeField] List<GameObject> m_enemyTypes;
 	[SerializeField] List<Wave> m_waves;
 
+	GameManager m_gameManager;
 	float m_delta;
 	int m_nowWave;
 	int m_enemyLeftInNowWave;
+	int m_enemyLeftInThisGame;
 
 	static EnemyGenerator m_instance;
 	public static EnemyGenerator Instance => m_instance;
@@ -56,6 +60,20 @@ public class EnemyGenerator : MonoBehaviour
     {
         m_nowWave = 0;
 		StartCoroutine(SpawnEnemyInNowWave(m_waitNextWaveTime));
+
+		m_gameManager = GameManager.Instance;
+
+		// 個のステージで出てくる敵の数をカウントする
+		m_enemyLeftInThisGame = 0;
+		for (int wave = 0; wave < m_waves.Count; wave++)
+		{
+			for (int amount = 0; amount < m_waves[wave].m_spawnInfos.Count; amount++)
+			{
+				m_enemyLeftInThisGame++;
+			}
+		}
+
+		UpdateEnemyAmountText();
     }
 
     // Update is called once per frame
@@ -63,6 +81,11 @@ public class EnemyGenerator : MonoBehaviour
     {
 		m_delta += Time.deltaTime;
     }
+
+	void UpdateEnemyAmountText()
+	{
+		m_enemyAmount.text = m_enemyLeftInThisGame.ToString();
+	}
 
 	IEnumerator SpawnEnemyInNowWave(float delay)
 	{
@@ -92,13 +115,26 @@ public class EnemyGenerator : MonoBehaviour
 
 	public void EnemyDeath()
 	{
+		// 残りの敵の数をカウントする
+		m_enemyLeftInNowWave--;
+		m_enemyLeftInThisGame--;
+		UpdateEnemyAmountText();
+
+		// ゲーム終了時に強制で止める
+		if (!m_gameManager.IsGameOver)
+		{
+			if (m_enemyLeftInThisGame <= 0)
+			{
+				m_gameManager.IsGameOver = true;
+			}
+		}
+		// 最終ウェーブの時、次のウェーブ（インデックス）を参照しないように止める
 		if (m_nowWave >= m_waves.Count - 1)
 		{
 			return;
 		}
 
-		m_enemyLeftInNowWave--;
-
+		// 個のウェーブのすべての敵を倒したら次のウェーブの敵を出現させる
 		if (m_enemyLeftInNowWave <= 0)
 		{
 			m_nowWave++;

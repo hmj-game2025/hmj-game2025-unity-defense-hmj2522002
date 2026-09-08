@@ -8,6 +8,9 @@ TagManager:
   - Camera
   - Attack
   - Damage
+  - EnemyUi
+  - Score
+  - Ravel
   layers:
   - Default
   - TransparentFX

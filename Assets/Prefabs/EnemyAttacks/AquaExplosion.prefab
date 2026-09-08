@@ -14676,7 +14676,7 @@ GameObject:
   - component: {fileID: 4472135469382627540}
   - component: {fileID: 8832525697947341463}
   m_Layer: 0
-  m_Name: WaterExplosion
+  m_Name: AquaExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

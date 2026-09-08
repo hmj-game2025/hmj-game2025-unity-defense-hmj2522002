@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4394323898553138261}
   - component: {fileID: 4897346293746970189}
   m_Layer: 9
-  m_Name: WaterBullet
+  m_Name: AquaBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

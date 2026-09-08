@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,12 +12,14 @@ public class Enemy : MonoBehaviour
 	[SerializeField] GameObject m_deathObj;
 	[SerializeField] GameObject m_attackObj;
 	[SerializeField] GameObject m_attackHitBox;
+	[SerializeField] GameObject m_enemyArrow;
 	[SerializeField] float m_attackSpan;
 	[SerializeField] float m_attackReach;
 	[SerializeField] float m_attackPower;
 	[SerializeField] float m_moveSpeed;
 	[SerializeField] float m_hp;
 	[SerializeField] float m_playerChaseTime;
+	[SerializeField] int m_score;
 
 	const float InvincibleTime = 0.05f;
 	const float StopDist = 0.5f;
@@ -47,6 +50,7 @@ public class Enemy : MonoBehaviour
 	Transform m_playerObj;
 	Transform m_castleObj;
 	Transform m_target;
+	Transform m_enemyUi;
 	EnemyGenerator m_generator;
 	Animator m_animator;
 	float m_invincibleTimeLeft;
@@ -62,6 +66,7 @@ public class Enemy : MonoBehaviour
 		m_animator = GetComponentInChildren<Animator>();
 		m_castleObj = GameObject.FindWithTag("Castle").transform;
 		m_target = m_castleObj;
+		m_enemyUi = GameObject.FindWithTag("EnemyUi").transform;
 	}
 
 	private void Start()
@@ -75,6 +80,10 @@ public class Enemy : MonoBehaviour
 
 		// 召喚されるときのパーティクル
 		Instantiate(m_deathObj, transform.position, transform.rotation);
+
+		// 画面外にいるときの矢印
+		GameObject arrow = Instantiate(m_enemyArrow, m_enemyUi);
+		arrow.GetComponent<EnemyUi>().FocusEnemy = this;
 	}
 
 	private void Update()
@@ -116,7 +125,9 @@ public class Enemy : MonoBehaviour
 		{
 			Vector3 angle = m_target.position - transform.position;
 
+			// 攻撃時は常にターゲットに向く
 			transform.LookAt(m_target);
+			transform.eulerAngles = new(0, transform.eulerAngles.y, 0);
 
             if (m_attackWaitTimeLeft <= 0)
 			{
@@ -146,6 +157,8 @@ public class Enemy : MonoBehaviour
 	void OnDeath(float delay = 0.0f)
 	{
 		m_generator.EnemyDeath();
+
+		m_playerObj.GetComponent<Player>().AddScore(m_score);
 
 		Destroy(gameObject, delay);
 	}
@@ -238,5 +251,4 @@ public class Enemy : MonoBehaviour
 			}
 		}
 	}
-
 }

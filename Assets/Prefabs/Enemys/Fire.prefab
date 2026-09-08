@@ -290,12 +290,14 @@ MonoBehaviour:
   m_deathObj: {fileID: 7685282342123172979, guid: e0ddab73b799cec42b1cd8dfc7a58926, type: 3}
   m_attackObj: {fileID: 0}
   m_attackHitBox: {fileID: 0}
+  m_enemyArrow: {fileID: 4503081018487701913, guid: 98d602d11399ff94bbfe8089a1220f1b, type: 3}
   m_attackSpan: 1
   m_attackReach: 3
   m_attackPower: 1
   m_moveSpeed: 2
   m_hp: 18
   m_playerChaseTime: 2
+  m_score: 500
   m_attackStatus: []
 --- !u!195 &2947972143809450340
 NavMeshAgent:

@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,5 +60,10 @@ public class Camera : MonoBehaviour
 		{
 			m_targetRange = m_maxRange;
 		}
+	}
+
+	internal Vector3 WorldToViewportPoint(Vector3 position)
+	{
+		throw new NotImplementedException();
 	}
 }

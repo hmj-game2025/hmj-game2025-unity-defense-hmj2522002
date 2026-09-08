@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -36,36 +37,26 @@ public class Player : MonoBehaviour
 	Animator m_animator;
 	CharacterController m_controller;
 	PauseMenu m_pause;
+	GameManager m_gameManager;
+	TextMeshProUGUI m_scoreText;
 	Vector3 m_startSpinAttackRotation;
 	Vector3 m_totalMove;
 	Vector3 m_stunMove;
 	Vector2 m_moveXZ;
-	Vector2 m_prevMoveXZ;
 	Vector2 m_leftStickControll;
 	Vector2 m_rightStickControll;
-	float m_walkSpeed;
 	float m_attackedDelay;
-	float m_baseHorizontalPos;
-	float m_nowHorizontalPos;
-	float m_rotateDirection;
-	float m_boatBoost;
-	float m_maxWidth;
-	float m_stunTimeLeft;
 	float m_speedY;
 	float m_spinAttackTime;
 	float m_prevSpinAttackTime;
 	float m_stunElapsedTime;
-	int m_totalScore;
+	float m_playTime;
+	int m_score;
 	int m_comboAmount;
-	bool m_isComboAttackReady;
-	bool m_isShield;
-	bool m_prevShield;
-	bool m_isPlayedGoalAnim;
-	bool m_canControll;
-	bool m_isPressedShield;
 	bool m_canBasicMove;	// 移動、ジャンプの基本的な動作ができるか
 	bool m_canTotalMove;    // 攻撃なども含めたすべての動作ができるか
 	bool m_isStun;
+	bool m_isSendStatus;
 
 	enum AttackType
 	{
@@ -76,6 +67,8 @@ public class Player : MonoBehaviour
 
 	static Player m_instance;
 
+	public int Score => m_score;
+
 	public static Player Instance => m_instance;
 
 	private void Awake()
@@ -84,9 +77,6 @@ public class Player : MonoBehaviour
 		{
 			m_instance = this;
 		}
-
-		m_controller = GetComponent<CharacterController>();
-		m_animator = m_playerObj.GetComponent<Animator>();
 	}
 
 	// Start is called before the first frame update
@@ -94,6 +84,14 @@ public class Player : MonoBehaviour
     {
 		m_camera = Camera.Instance;
 		m_pause = PauseMenu.Instance;
+		m_gameManager = GameManager.Instance;
+
+		m_controller = GetComponent<CharacterController>();
+		m_animator = m_playerObj.GetComponent<Animator>();
+		m_scoreText = GameObject.FindWithTag("Score").GetComponent<TextMeshProUGUI>();
+
+		// 仮で関数を実行してテキストを反映させる
+		AddScore(0);
 
 		for (int i = 0; i < m_attackHit.transform.childCount; i++)
 		{
@@ -114,14 +112,22 @@ public class Player : MonoBehaviour
 			return;
 		}
 
+		// ゲーム中タイマー、リザルトで使用する
+		if (!m_gameManager.IsGameOver)
+		{
+			m_playTime += Time.deltaTime;
+		}
+
 		m_attackedDelay += Time.deltaTime;
 
 		float boostMagnification = 
 			m_controller.isGrounded ? 1.0f : m_boostMagnificationAir;
 
+		// 攻撃中は横移動の制限を設ける
 		m_canBasicMove = m_comboAttackDelay < m_attackedDelay;
 
-		m_canTotalMove = !m_isStun;
+		// スタン中やゲーム終了時にほぼすべての動作の制限を設ける
+		m_canTotalMove = !m_isStun && !m_gameManager.IsGameOver;
 
 		// 縦横移動 /////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (m_moveXZ.magnitude <= m_leftStickControll.magnitude)
@@ -151,8 +157,6 @@ public class Player : MonoBehaviour
 				m_moveXZ = Vector2.zero;
 			}
 		}
-
-		m_walkSpeed = m_moveXZ.magnitude;
 
 		Vector3 moveX_Z = new(m_moveXZ.x, 0, m_moveXZ.y);
 		moveX_Z *= m_maxWalkSpeed;
@@ -252,7 +256,23 @@ public class Player : MonoBehaviour
 			m_animator.SetFloat("SpeedY", m_speedY);
 		}
 
+		// ゲーム結果の送信 /////////////////////////////////////////////////////////////////////////////////////////////
+		if (m_gameManager.IsGameOver && !m_isSendStatus)
+		{
+			m_isSendStatus = true;
+
+			m_gameManager.MainScore = m_score;
+			m_gameManager.PlayTime = m_playTime;
+		}
+
 		m_animator.SetBool("IsGrounded", m_controller.isGrounded);
+	}
+
+	public void AddScore(int score)
+	{
+		m_score += score;
+
+		m_scoreText.text = m_score.ToString();
 	}
 
 	public void OnMove(InputAction.CallbackContext callbackContext)
@@ -352,6 +372,10 @@ public class Player : MonoBehaviour
 			return;
 		}
 		if (!m_canTotalMove)
+		{
+			return;
+		}
+		if (m_pause.IsPause)
 		{
 			return;
 		}
