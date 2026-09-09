@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using TMPro;
 using UnityEditor.ShaderGraph;
@@ -249,7 +250,7 @@ public class Player : MonoBehaviour
 		// ê⁄ínîªíË /////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (m_controller.isGrounded)
 		{
-			m_speedY = -0.2f;
+			m_speedY = -5.0f;
 		}
 		else
 		{
@@ -405,6 +406,10 @@ public class Player : MonoBehaviour
 			return;
 		}
 		if (m_pause.IsPause)
+		{
+			return;
+		}
+		if (SceneChanger.Instance.IsFade)
 		{
 			return;
 		}

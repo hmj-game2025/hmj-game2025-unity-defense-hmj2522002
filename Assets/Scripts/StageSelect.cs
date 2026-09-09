@@ -24,6 +24,7 @@ public class StageSelect : MonoBehaviour
 	[SerializeField] GameObject m_playerObj;
 	[SerializeField] Transform m_spawnElements;
 	[SerializeField] TextMeshProUGUI m_stageName;
+	[SerializeField] TextMeshProUGUI m_highScore;
 	[SerializeField] Vector3 m_iconOffset;
 	[SerializeField] float m_iconDist;
 	[SerializeField] List<StageNameInfo> m_stages;
@@ -37,6 +38,7 @@ public class StageSelect : MonoBehaviour
 
 	static StageSelect m_instance;
 
+	public const int StageAmount = 3;
 	const float StickActivePower = 0.5f;
 
 	public static StageSelect Instance => m_instance;
@@ -118,7 +120,7 @@ public class StageSelect : MonoBehaviour
 
 		List<Sprite> elements = m_stages[m_nowCursor].element;
 
-		// 新しく選択されたステージのアイコンを貼り付ける
+		// 新しく選択されたステージに出てくるエレメダマアイコンを貼り付ける
 		for (int i = 0; i < elements.Count; i++)
 		{
 			GameObject icon = Instantiate(m_elementIcon, m_spawnElements);
@@ -129,6 +131,10 @@ public class StageSelect : MonoBehaviour
 
 			icon.transform.localPosition = pos + m_iconOffset;
 		}
+
+		// 個のステージのハイスコア /////////////////////////////////////////////////////////////////////////////////////
+
+		m_highScore.text = SaveData.Instance.Read(m_nowCursor).ToString();
 	}
 
 	public void OnMove(InputAction.CallbackContext callbackContext)
@@ -143,9 +149,13 @@ public class StageSelect : MonoBehaviour
 			return;
 		}
 
+		// ステージに飛ぶ ///////////////////////////////////////////////////////////////////////////////////////////////
 		m_gameManager.StageName = m_stages[m_nowCursor].stageName;
 
-		m_sceneChanger.StartChangeScene("Level_01", GameManager.SceneType.Game);
+		m_sceneChanger.StartChangeScene(m_stages[m_nowCursor].sceneName, GameManager.SceneType.Game);
+
+		// 同時に、最後にプレイしたステージ番号を記憶
+		m_gameManager.StageNum = m_nowCursor;
 	}
 
 	public void OnBack(InputAction.CallbackContext callbackContext)

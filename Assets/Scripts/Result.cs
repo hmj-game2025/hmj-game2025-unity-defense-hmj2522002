@@ -59,8 +59,11 @@ public class Result : MonoBehaviour
 		m_CastleDamageUi.transform.Find("Score").GetComponent<TextMeshProUGUI>().text
 			= "+ " + hpBonus;
 
-		m_totalScore.text = (m_baseScore + timeBonus + hpBonus).ToString();
+		int totalScore = m_baseScore + timeBonus + hpBonus;
 
+		m_totalScore.text = (totalScore).ToString();
+
+		m_gameManager.TotalScore = totalScore;
     }
 
     // Update is called once per frame

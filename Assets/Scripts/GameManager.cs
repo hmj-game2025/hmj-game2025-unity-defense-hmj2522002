@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
 	float m_gameOverElapsed;
 	float m_startElapsed;
 	int m_mainScore;
+	int m_totalScore;
+	int m_stageNum;
 	bool m_isGameOver;
 	bool m_prevGameOver;
 
@@ -47,6 +49,11 @@ public class GameManager : MonoBehaviour
 		get { return m_mainScore; }
 		set { m_mainScore = value; }
 	}
+	public int TotalScore
+	{
+		get { return m_totalScore; }
+		set { m_totalScore = value; }
+	}
 	public bool IsGameOver
 	{
 		get { return m_isGameOver; }
@@ -56,6 +63,11 @@ public class GameManager : MonoBehaviour
 	{
 		get { return m_stageName; }
 		set { m_stageName = value; }
+	}
+	public int StageNum
+	{
+		get { return m_stageNum; }
+		set { m_stageNum = value; }
 	}
 	public static GameManager Instance => m_instance;
 
@@ -106,6 +118,22 @@ public class GameManager : MonoBehaviour
 					m_isGameOver = false;
 					m_startElapsed = 0;
 					m_gameOverElapsed = 0;
+
+					break;
+
+				case SceneType.StageSelect:
+
+					SaveData saveData = SaveData.Instance;
+					DataManager dataManager = DataManager.Instance;
+
+					if (saveData.Read(m_stageNum) < m_totalScore)
+					{
+						saveData.Write(m_stageNum, m_totalScore);
+					}
+
+					dataManager.SaveToFile();
+
+					Debug.Log(saveData.Read(m_stageNum));
 
 					break;
 			}

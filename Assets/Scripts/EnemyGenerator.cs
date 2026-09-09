@@ -109,8 +109,7 @@ public class EnemyGenerator : MonoBehaviour
 
 		yield return new WaitForSeconds(info.delay);
 
-		GameObject go = Instantiate(enemy);
-		go.transform.position = position;
+		GameObject go = Instantiate(enemy, position, Quaternion.identity);
 	}
 
 	public void EnemyDeath()
