@@ -16,12 +16,14 @@ public class Enemy : MonoBehaviour
 	[SerializeField] AudioClip m_seThrow;
 	[SerializeField] AudioClip m_seDamage;
 	[SerializeField] AudioClip m_seDeath;
+	[SerializeField] float m_soundVol;
 	[SerializeField] float m_attackSpan;
 	[SerializeField] float m_attackReach;
 	[SerializeField] float m_attackPower;
 	[SerializeField] float m_moveSpeed;
 	[SerializeField] float m_hp;
 	[SerializeField] float m_playerChaseTime;
+	[SerializeField] float m_bulletHightOffset;
 	[SerializeField] int m_score;
 
 	const float InvincibleTime = 0.05f;
@@ -57,6 +59,7 @@ public class Enemy : MonoBehaviour
 	EnemyGenerator m_generator;
 	Animator m_animator;
 	AudioSource m_audioSource;
+	SeCoolDown m_seCoolDown;
 	float m_invincibleTimeLeft;
 	float m_attackWaitTimeLeft;
 	float m_playerChaseTimeLeft;
@@ -81,11 +84,17 @@ public class Enemy : MonoBehaviour
 		m_generator = EnemyGenerator.Instance;
 		m_castle = Castle.Instance;
 		m_baseSpeed = m_moveSpeed;
+		m_seCoolDown = SeCoolDown.Instance;
 
 		// 召喚されるときのパーティクル
 		Instantiate(m_deathObj, transform.position, transform.rotation);
 
-		AudioSource.PlayClipAtPoint(m_seDeath, transform.position);
+		m_audioSource = Player.Instance.AudioSource;
+
+		if (m_seCoolDown.CanPlay(m_seDeath))
+		{
+			m_audioSource.PlayOneShot(m_seDeath);
+		}
 
 		// 画面外にいるときの矢印
 		GameObject arrow = Instantiate(m_enemyArrow, m_enemyUi);
@@ -173,7 +182,10 @@ public class Enemy : MonoBehaviour
     {
 		if (m_isDeath)
 		{
-			AudioSource.PlayClipAtPoint(m_seDeath, transform.position);
+			if (m_seCoolDown.CanPlay(m_seDeath))
+			{
+				m_audioSource.PlayOneShot(m_seDeath);
+			}
 
 			Instantiate(m_deathObj, transform.position, transform.rotation);
 		}
@@ -189,9 +201,12 @@ public class Enemy : MonoBehaviour
 			yield break;
 		}
 
-		AudioSource.PlayClipAtPoint(m_seThrow, transform.position);
+		if (m_seCoolDown.CanPlay(m_seThrow))
+		{
+			m_audioSource.PlayOneShot(m_seThrow);
+		}
 
-		GameObject obj = Instantiate(m_attackObj, transform.position, transform.rotation);
+		GameObject obj = Instantiate(m_attackObj, transform.position + Vector3.up * m_bulletHightOffset, transform.rotation);
 
 		// 弾を発射して攻撃するタイプ
 		EnemyBullet bullet = obj.GetComponent<EnemyBullet>();
@@ -239,7 +254,10 @@ public class Enemy : MonoBehaviour
 				return;
 			}
 
-			AudioSource.PlayClipAtPoint(m_seDamage, transform.position);
+			if (m_seCoolDown.CanPlay(m_seDamage))
+			{
+				m_audioSource.PlayOneShot(m_seDamage);
+			}
 
 			m_hp -= other.GetComponent<AttackPower>().Power;
 			m_invincibleTimeLeft = InvincibleTime;

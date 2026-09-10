@@ -7,12 +7,15 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 	[SerializeField] SceneType m_sceneType;
+	[SerializeField] AudioClip m_seClear;
+	[SerializeField] AudioClip m_seGameOver;
 
 	const float GameOverWaitTime = 3.0f;
 	const float RavelShowTime = 5.0f;
 	const float RavelHidingTime = 1.0f;
 	const float RavelShowWaitTime = 1.0f;
 
+	AudioSource m_audioSource;
 	SceneChanger m_sceneChanger;
 	TextMeshProUGUI m_ravel;
 	SceneType m_prevSceneType;
@@ -23,9 +26,11 @@ public class GameManager : MonoBehaviour
 	float m_startElapsed;
 	int m_mainScore;
 	int m_totalScore;
+	int m_timeBonus;
 	int m_stageNum;
 	bool m_isGameOver;
 	bool m_prevGameOver;
+	bool m_isShowedResult;
 
 	static GameManager m_instance;
 
@@ -69,6 +74,11 @@ public class GameManager : MonoBehaviour
 		get { return m_stageNum; }
 		set { m_stageNum = value; }
 	}
+	public int TimeBonus
+	{
+		get { return m_timeBonus; }
+		set { m_timeBonus = value; }
+	}
 	public static GameManager Instance => m_instance;
 
 	public enum SceneType
@@ -101,6 +111,8 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene("Title");
 			m_sceneType = SceneType.Title;
         }
+
+		m_audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -165,17 +177,23 @@ public class GameManager : MonoBehaviour
 					m_gameOverElapsed += Time.deltaTime;
 
 					// 少し待ってから結果を表示
-					if (m_gameOverElapsed > RavelShowWaitTime)
+					if (m_gameOverElapsed > RavelShowWaitTime && !m_isShowedResult)
 					{
+						m_isShowedResult = true;
+
 						if (Castle.Instance.GetHp01() > 0)
 						{
 							m_ravel.text = "ステージクリア！！";
 							m_ravel.color = Color.yellow;
+
+							m_audioSource.PlayOneShot(m_seClear);
 						}
 						else
 						{
 							m_ravel.text = "ゲームオーバー";
 							m_ravel.color = Color.magenta;
+
+							m_audioSource.PlayOneShot(m_seGameOver);
 						}
 					}
 

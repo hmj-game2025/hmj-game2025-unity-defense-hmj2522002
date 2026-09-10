@@ -13,7 +13,7 @@ public class Explosion : MonoBehaviour
 		{
 			if (SeCoolDown.Instance.CanPlay(clip))
 			{
-				AudioSource.PlayClipAtPoint(clip, transform.position);
+				Player.Instance.AudioSource.PlayOneShot(clip);
 			}
 		}
     }

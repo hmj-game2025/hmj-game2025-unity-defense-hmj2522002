@@ -157,18 +157,4 @@ public class EnemyAttack : MonoBehaviour
 			sphere.radius = length / 2.0f;
 		}
 	}
-
-	IEnumerator AttackHitBox(float waitSpan = 0.0f)
-	{
-		yield return new WaitForSeconds(m_attackWaitTime + waitSpan);
-
-		m_hitBox.enabled = true;
-
-		yield return new WaitForSeconds(m_attackHitStayTime);
-
-		m_hitBox.enabled = false;
-		Debug.Log("false");
-
-		m_runningCoroutines--;
-	}
 }

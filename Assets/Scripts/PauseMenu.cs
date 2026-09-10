@@ -73,7 +73,7 @@ public class PauseMenu : MonoBehaviour
 				m_nowCursor = 0;
 			}
 
-			m_audioSource.PlayOneShot(m_seSelect);
+			m_audioSource.PlayOneShot(m_seMove);
 		}
 		if (m_leftStick.y < -StickActivePower && m_prevLeft.y >= -StickActivePower)
 		{
@@ -83,6 +83,7 @@ public class PauseMenu : MonoBehaviour
 			{
 				m_nowCursor = m_buttonAmount - 1;
 			}
+			m_audioSource.PlayOneShot(m_seMove);
 		}
 
 		m_arrow.transform.position = m_buttons.transform.GetChild(m_nowCursor).transform.position;
@@ -120,6 +121,10 @@ public class PauseMenu : MonoBehaviour
 		{
 			return;
 		}
+		if (!m_isPause)
+		{
+			return;
+		}
 
 		Continue();
 
@@ -133,6 +138,10 @@ public class PauseMenu : MonoBehaviour
 			return;
 		}
 		if (m_waitControllFrame > 0)
+		{
+			return;
+		}
+		if (!m_isPause)
 		{
 			return;
 		}
@@ -163,8 +172,11 @@ public class PauseMenu : MonoBehaviour
 
 	public void OnMove(InputAction.CallbackContext callbackContext)
 	{
-		m_leftStick = callbackContext.ReadValue<Vector2>();
+		if (!m_isPause)
+		{
+			return;
+		}
 
-		m_audioSource.PlayOneShot(m_seMove);
+		m_leftStick = callbackContext.ReadValue<Vector2>();
 	}
 }

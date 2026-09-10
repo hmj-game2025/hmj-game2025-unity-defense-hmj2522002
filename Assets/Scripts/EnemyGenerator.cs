@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyGenerator : MonoBehaviour
 {
@@ -49,6 +50,11 @@ public class EnemyGenerator : MonoBehaviour
 
 	private void Awake()
 	{
+		if (SceneChanger.Instance == null || GameManager.Instance == null)
+		{
+			SceneManager.LoadScene("Title");
+		}
+
 		if (m_instance == null)
 		{
 			m_instance = this;

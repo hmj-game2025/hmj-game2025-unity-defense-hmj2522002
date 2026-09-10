@@ -165,6 +165,9 @@ public class StageSelect : MonoBehaviour
 		// 同時に、最後にプレイしたステージ番号を記憶
 		m_gameManager.StageNum = m_nowCursor;
 
+		// 個のステージのタイムボーナスも記憶
+		m_gameManager.TimeBonus = m_stages[m_nowCursor].timeBonus;
+
 		BGM.Instance.PlayBGM = false;
 
 		m_audioSource.PlayOneShot(m_seSelect);

@@ -17,7 +17,6 @@ public class Result : MonoBehaviour
 	GameManager m_gameManager;
 	SaveData m_saveData;
 
-	const int TimeBonus = 30000;
 	const int CastleBonus = 10000;
 
 	int m_baseScore;
@@ -51,7 +50,7 @@ public class Result : MonoBehaviour
 
 		// タイムボーナス（クリアタイムごとのスコア）
 		string time = FloatToTime.ChangeFloatToTime(m_time);
-		int timeBonus = TimeBonus - (int)(m_time * 100);
+		int timeBonus = m_gameManager.TimeBonus - (int)(m_time * 100);
 		if (timeBonus < 0)
 		{
 			timeBonus = 0;

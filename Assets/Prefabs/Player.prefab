@@ -264,7 +264,7 @@ MonoBehaviour:
   m_spinAttackHit: {fileID: 1314401259799753238}
   m_sword: {fileID: 5236990105889723673}
   m_playerObj: {fileID: 4958886951163250179}
-  m_seJump: {fileID: 8300000, guid: 705e6eb852da1fb4288da63be04c6a97, type: 3}
+  m_seJump: {fileID: 8300000, guid: 4455d24734f78c041b199f68d3c82805, type: 3}
   m_seGround: {fileID: 8300000, guid: 83c9a1d6f60f90a4086f8c93eba6fa51, type: 3}
   m_seAttack: {fileID: 8300000, guid: 86e6ae941f392d849802b54516b3a159, type: 3}
   m_seSpinAttack: {fileID: 8300000, guid: 32e8b1fcb8066464381028add522f1d0, type: 3}

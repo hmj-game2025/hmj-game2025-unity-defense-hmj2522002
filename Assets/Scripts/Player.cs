@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
 	bool m_canTotalMove;    // çUåÇÇ»Ç«Ç‡ä‹ÇﬂÇΩÇ∑Ç◊ÇƒÇÃìÆçÏÇ™Ç≈Ç´ÇÈÇ©
 	bool m_isStun;
 	bool m_isSendStatus;
+	bool m_prevGrounded;
 
 	enum AttackType
 	{
@@ -259,6 +260,10 @@ public class Player : MonoBehaviour
 		if (m_controller.isGrounded)
 		{
 			m_speedY = -5.0f;
+			if (!m_prevGrounded)
+			{
+				m_audioSource.PlayOneShot(m_seGround);
+			}
 		}
 		else
 		{
@@ -275,6 +280,8 @@ public class Player : MonoBehaviour
 		}
 
 		m_animator.SetBool("IsGrounded", m_controller.isGrounded);
+
+		m_prevGrounded = m_controller.isGrounded;
 	}
 
 	public void AddScore(int score)
@@ -394,6 +401,7 @@ public class Player : MonoBehaviour
 			m_speedY = m_jumpPower;
 
 			m_animator.SetTrigger("Jump");
+			m_audioSource.PlayOneShot(m_seJump);
 		}
 	}
 
@@ -427,14 +435,15 @@ public class Player : MonoBehaviour
 
 	IEnumerator TryAttack(AttackType type, string animName = "", float delay = 0.1f, float keep = 0.1f)
 	{
-
 		if (type == AttackType.Attack)
 		{
 			StartCoroutine(AttackHitBox(m_attackHit, keep));
+			m_audioSource.PlayOneShot(m_seAttack);
 		}
 		else if (type == AttackType.SpinAttack)
 		{
 			StartCoroutine(AttackHitBox(m_spinAttackHit, keep));
+			m_audioSource.PlayOneShot(m_seSpinAttack);
 		}
 
 		if (animName != "")
@@ -480,6 +489,8 @@ public class Player : MonoBehaviour
 
 				m_isStun = true;
 				m_stunElapsedTime = 0;
+
+				m_audioSource.PlayOneShot(m_seDamage);
 			}
 		}
 	}
