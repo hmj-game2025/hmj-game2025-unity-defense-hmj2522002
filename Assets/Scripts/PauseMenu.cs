@@ -10,10 +10,13 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject m_screen;
 	[SerializeField] GameObject m_buttons;
 	[SerializeField] GameObject m_arrow;
+	[SerializeField] AudioClip m_seSelect;
+	[SerializeField] AudioClip m_seMove;
 
 	const float StickActivePower = 0.5f;
 	const int PauseWaitControllFrame = 2;
 
+	AudioSource m_audioSource;
 	Vector2 m_leftStick;
 	Vector2 m_prevLeft;
 	float m_pausedElapsedTime;
@@ -40,6 +43,7 @@ public class PauseMenu : MonoBehaviour
     {
         m_buttonAmount = m_buttons.transform.childCount;
 		m_nowCursor = 0;
+		m_audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -68,6 +72,8 @@ public class PauseMenu : MonoBehaviour
 			{
 				m_nowCursor = 0;
 			}
+
+			m_audioSource.PlayOneShot(m_seSelect);
 		}
 		if (m_leftStick.y < -StickActivePower && m_prevLeft.y >= -StickActivePower)
 		{
@@ -100,9 +106,11 @@ public class PauseMenu : MonoBehaviour
         // timeScale... 物理演算等のスピード。deltaTimeの値にも比例している。
         // フレーム単位のdeltaTimeを使わないカウントダウン処理などには反映されない
         Time.timeScale = 0.0f;
-    }
 
-    public void OnCloseMenu(InputAction.CallbackContext callbackContext)
+		m_audioSource.PlayOneShot(m_seSelect);
+	}
+
+	public void OnCloseMenu(InputAction.CallbackContext callbackContext)
     {
         if (!callbackContext.performed)
         {
@@ -114,7 +122,9 @@ public class PauseMenu : MonoBehaviour
 		}
 
 		Continue();
-    }
+
+		m_audioSource.PlayOneShot(m_seSelect);
+	}
 
 	public void OnSelect(InputAction.CallbackContext callbackContext)
 	{
@@ -147,10 +157,14 @@ public class PauseMenu : MonoBehaviour
 		{
 			Continue();
 		}
+
+		m_audioSource.PlayOneShot(m_seSelect);
 	}
 
 	public void OnMove(InputAction.CallbackContext callbackContext)
 	{
 		m_leftStick = callbackContext.ReadValue<Vector2>();
+
+		m_audioSource.PlayOneShot(m_seMove);
 	}
 }

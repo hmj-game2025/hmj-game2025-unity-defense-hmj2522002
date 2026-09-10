@@ -79,27 +79,7 @@ public class EnemyAttack : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		m_hitBox.enabled = false;
-
-		Enemy.AttackStatus stats = m_parentEnemyStatus[m_attackStatusIndex];
-
-		m_attackAmount = stats.attackAmount;
-		m_attackWaitTime = stats.attackWaitTime;
-		m_attackHitStayTime = stats.attackHitStayTime;
-		m_knockBackHorizontalPower = stats.knockBackHorizontalPower;
-		m_knockBackVerticalPower = stats.knockBackVerticalPower;
-		m_attackPower = stats.attackPower;
-		m_forwardOffset = stats.startForwardOffset;
-
-		m_hitBox.radius = stats.attackRadius;
-
-		// 敵から直接生成されたダメージ判定なら、敵の位置に判定を生成する
-		if (!m_clonedFromBullet)
-		{
-			transform.position += transform.forward * m_forwardOffset;
-		}
-
-		m_cullentToSwitchedTime = -m_attackWaitTime;
+		AttackStatus(m_attackStatusIndex);
 	}
 
 	private void Update()
@@ -124,11 +104,43 @@ public class EnemyAttack : MonoBehaviour
 
 				if (m_attackAmount <= 0)
 				{
-					gameObject.SetActive(false);
-					Destroy(gameObject);
+					m_attackStatusIndex++;
+					AttackStatus(m_attackStatusIndex);
 				}
 			}
 		}
+	}
+
+	void AttackStatus(int index)
+	{
+		if (m_parentEnemyStatus.Count - 1 < index)
+		{
+			gameObject.SetActive(false);
+			Destroy(gameObject);
+			return;
+		}
+
+		m_hitBox.enabled = false;
+
+		Enemy.AttackStatus stats = m_parentEnemyStatus[m_attackStatusIndex];
+
+		m_attackAmount = stats.attackAmount;
+		m_attackWaitTime = stats.attackWaitTime;
+		m_attackHitStayTime = stats.attackHitStayTime;
+		m_knockBackHorizontalPower = stats.knockBackHorizontalPower;
+		m_knockBackVerticalPower = stats.knockBackVerticalPower;
+		m_attackPower = stats.attackPower;
+		m_forwardOffset = stats.startForwardOffset;
+
+		m_hitBox.radius = stats.attackRadius;
+
+		// 敵から直接生成されたダメージ判定なら、敵の位置に判定を生成する
+		if (!m_clonedFromBullet)
+		{
+			transform.position += transform.forward * m_forwardOffset;
+		}
+
+		m_cullentToSwitchedTime = -m_attackWaitTime;
 	}
 
 	public void SetAttackInfo(GameObject hitBox, Quaternion front, float length = 1.0f, int amount = 1, float span = 0.5f, float delay = 0)

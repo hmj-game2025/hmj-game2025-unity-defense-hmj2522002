@@ -55,10 +55,14 @@ public class Castle : MonoBehaviour
 
 		if (m_hp <= 0)
 		{
+			m_hp = 0;
+
 			m_camera.Follow = gameObject.transform;
 			m_camera.LookAt = null;
 
 			m_gameManager.IsGameOver = true;
+
+			BGM.Instance.PlayBGM = false;
 		}
 	}
 

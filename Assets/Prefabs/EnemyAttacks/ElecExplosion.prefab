@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7808803441666385272}
   - component: {fileID: 8732383307186263562}
   - component: {fileID: 4740559882524632879}
+  - component: {fileID: -3533965483295881128}
   m_Layer: 0
   m_Name: ElecExplosion
   m_TagString: Untagged
@@ -4890,6 +4891,21 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-3533965483295881128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293435739833567143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55bd4c6b1227df34d900dcf4a29454c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_sounds:
+  - {fileID: 8300000, guid: 7738cda40af1dd3419b62287ab96fa2d, type: 3}
+  - {fileID: 8300000, guid: 85a81b5cc2983df4ea129b71d8486b00, type: 3}
 --- !u!1 &6336868380078960095
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,9 @@ using UnityEngine.InputSystem;
 
 public class Title : MonoBehaviour
 {
+	[SerializeField] AudioClip m_seSelect;
 	SceneChanger m_sceneChanger;
+	AudioSource m_audioSource;
 	static Title m_instance;
 
 	public static Title Instance => m_instance;
@@ -22,6 +24,7 @@ public class Title : MonoBehaviour
 	void Start()
     {
         m_sceneChanger = SceneChanger.Instance;
+		m_audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -38,5 +41,9 @@ public class Title : MonoBehaviour
 		}
 
 		m_sceneChanger.StartChangeScene("StageSelect", GameManager.SceneType.StageSelect);
+
+		BGM.Instance.PlayBGM = false;
+
+		m_audioSource.PlayOneShot(m_seSelect);
 	}
 }

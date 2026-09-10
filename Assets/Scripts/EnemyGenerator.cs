@@ -125,6 +125,8 @@ public class EnemyGenerator : MonoBehaviour
 			if (m_enemyLeftInThisGame <= 0)
 			{
 				m_gameManager.IsGameOver = true;
+
+				BGM.Instance.PlayBGM = false;
 			}
 		}
 		// 最終ウェーブの時、次のウェーブ（インデックス）を参照しないように止める

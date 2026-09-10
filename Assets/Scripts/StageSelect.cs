@@ -25,12 +25,15 @@ public class StageSelect : MonoBehaviour
 	[SerializeField] Transform m_spawnElements;
 	[SerializeField] TextMeshProUGUI m_stageName;
 	[SerializeField] TextMeshProUGUI m_highScore;
+	[SerializeField] AudioClip m_seSelect;
+	[SerializeField] AudioClip m_seMove;
 	[SerializeField] Vector3 m_iconOffset;
 	[SerializeField] float m_iconDist;
 	[SerializeField] List<StageNameInfo> m_stages;
 
 	GameManager m_gameManager;
 	SceneChanger m_sceneChanger;
+	AudioSource m_audioSource;
 	Vector2 m_leftStick;
 	Vector2 m_prevLeft;
 	int m_nowCursor;
@@ -62,6 +65,7 @@ public class StageSelect : MonoBehaviour
 
 		m_sceneChanger = SceneChanger.Instance;
 		m_gameManager = GameManager.Instance;
+		m_audioSource = GetComponent<AudioSource>();
 
 		RefreshUis();
     }
@@ -79,6 +83,8 @@ public class StageSelect : MonoBehaviour
 			{
 				m_nowCursor = m_stages.Count - 1;
 			}
+
+			m_audioSource.PlayOneShot(m_seMove);
 		}
 		if (m_leftStick.x < -StickActivePower && m_prevLeft.x >= -StickActivePower)
 		{
@@ -89,6 +95,8 @@ public class StageSelect : MonoBehaviour
 			{
 				m_nowCursor = 0;
 			}
+
+			m_audioSource.PlayOneShot(m_seMove);
 		}
 
 		m_prevLeft = m_leftStick;
@@ -156,6 +164,10 @@ public class StageSelect : MonoBehaviour
 
 		// 同時に、最後にプレイしたステージ番号を記憶
 		m_gameManager.StageNum = m_nowCursor;
+
+		BGM.Instance.PlayBGM = false;
+
+		m_audioSource.PlayOneShot(m_seSelect);
 	}
 
 	public void OnBack(InputAction.CallbackContext callbackContext)
@@ -166,5 +178,7 @@ public class StageSelect : MonoBehaviour
 		}
 
 		m_sceneChanger.StartChangeScene("Title", GameManager.SceneType.Title);
+
+		BGM.Instance.PlayBGM = false;
 	}
 }

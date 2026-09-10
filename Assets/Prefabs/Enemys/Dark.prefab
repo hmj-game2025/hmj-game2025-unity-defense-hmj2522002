@@ -10043,17 +10043,50 @@ MonoBehaviour:
   m_agent: {fileID: 2947972143809450340}
   m_damageObj: {fileID: 7845074005629772271, guid: a20dd3d076a61d646b661e70a41dd62f, type: 3}
   m_deathObj: {fileID: 7685282342123172979, guid: e0ddab73b799cec42b1cd8dfc7a58926, type: 3}
-  m_attackObj: {fileID: 0}
-  m_attackHitBox: {fileID: 0}
+  m_attackObj: {fileID: 7621042231684543734, guid: 25cc3ba01b1f8e842bb9a3743dc52034, type: 3}
+  m_attackHitBox: {fileID: 2728392400563491570, guid: 2e2ae1664079633468aa29093acba7d4, type: 3}
   m_enemyArrow: {fileID: 4503081018487701913, guid: 98d602d11399ff94bbfe8089a1220f1b, type: 3}
-  m_attackSpan: 1
+  m_seThrow: {fileID: 8300000, guid: 705e6eb852da1fb4288da63be04c6a97, type: 3}
+  m_seDamage: {fileID: 8300000, guid: ac638bc9f6b995c43a419c0260b0ca31, type: 3}
+  m_seDeath: {fileID: 8300000, guid: 590a40adcf76cd045ab06b086ab93cc5, type: 3}
+  m_attackSpan: 7
   m_attackReach: 1.5
   m_attackPower: 1
   m_moveSpeed: 1
   m_hp: 36
   m_playerChaseTime: 2
   m_score: 1500
-  m_attackStatus: []
+  m_attackStatus:
+  - startForwardOffset: 0
+    angle: {x: 0, y: 0, z: 0, w: 0}
+    attackAmount: 2
+    attackWaitTime: 0.5
+    attackSpan: 0.4
+    attackHitStayTime: 0.4
+    knockBackHorizontalPower: 2
+    knockBackVerticalPower: 2
+    attackPower: 0.6
+    attackRadius: 3
+  - startForwardOffset: 0
+    angle: {x: 0, y: 0, z: 0, w: 0}
+    attackAmount: 2
+    attackWaitTime: 0
+    attackSpan: 0.4
+    attackHitStayTime: 0.4
+    knockBackHorizontalPower: 3
+    knockBackVerticalPower: 3
+    attackPower: 1.2
+    attackRadius: 4
+  - startForwardOffset: 0
+    angle: {x: 0, y: 0, z: 0, w: 0}
+    attackAmount: 3
+    attackWaitTime: 0
+    attackSpan: 0.4
+    attackHitStayTime: 0.4
+    knockBackHorizontalPower: 4
+    knockBackVerticalPower: 4
+    attackPower: 2
+    attackRadius: 5
 --- !u!195 &2947972143809450340
 NavMeshAgent:
   m_ObjectHideFlags: 0

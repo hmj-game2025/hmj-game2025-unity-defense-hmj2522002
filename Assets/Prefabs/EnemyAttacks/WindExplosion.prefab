@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 369815170027420333}
   - component: {fileID: 1670680770887622059}
   - component: {fileID: 2177702824552938883}
+  - component: {fileID: 7329113127676322797}
   m_Layer: 0
   m_Name: WindExplosion
   m_TagString: Untagged
@@ -4891,6 +4892,21 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &7329113127676322797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2167706984551360441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55bd4c6b1227df34d900dcf4a29454c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_sounds:
+  - {fileID: 8300000, guid: 7738cda40af1dd3419b62287ab96fa2d, type: 3}
+  - {fileID: 8300000, guid: a4d2785c59cb4414585e938ac98e0b90, type: 3}
 --- !u!1 &2572735495640161119
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
 	[SerializeField] GameObject m_spinAttackHit;
 	[SerializeField] GameObject m_sword;
 	[SerializeField] GameObject m_playerObj;
+	[SerializeField] AudioClip m_seJump;
+	[SerializeField] AudioClip m_seGround;
+	[SerializeField] AudioClip m_seAttack;
+	[SerializeField] AudioClip m_seSpinAttack;
+	[SerializeField] AudioClip m_seDamage;
 	[SerializeField] float m_boostWalkSpeed;		// 速度収束量
 	[SerializeField] float m_boostMagnificationAir;	// 空中での収束率
 	[SerializeField] float m_maxWalkSpeed;          // サイコウソク
@@ -40,6 +45,7 @@ public class Player : MonoBehaviour
 	PauseMenu m_pause;
 	GameManager m_gameManager;
 	TextMeshProUGUI m_scoreText;
+	AudioSource m_audioSource;
 	Vector3 m_startSpinAttackRotation;
 	Vector3 m_totalMove;
 	Vector3 m_stunMove;
@@ -70,6 +76,7 @@ public class Player : MonoBehaviour
 
 	public int Score => m_score;
 
+	public AudioSource AudioSource => m_audioSource;
 	public static Player Instance => m_instance;
 
 	private void Awake()
@@ -90,6 +97,7 @@ public class Player : MonoBehaviour
 		m_controller = GetComponent<CharacterController>();
 		m_animator = m_playerObj.GetComponent<Animator>();
 		m_scoreText = GameObject.FindWithTag("Score").GetComponent<TextMeshProUGUI>();
+		m_audioSource = GetComponent<AudioSource>();
 
 		// 仮で関数を実行してテキストを反映させる
 		AddScore(0);

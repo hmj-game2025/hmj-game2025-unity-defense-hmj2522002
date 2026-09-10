@@ -291,6 +291,9 @@ MonoBehaviour:
   m_attackObj: {fileID: 2527354573506569033, guid: 0094a9d155aff7e4fbd53c677e0ee802, type: 3}
   m_attackHitBox: {fileID: 0}
   m_enemyArrow: {fileID: 4503081018487701913, guid: 98d602d11399ff94bbfe8089a1220f1b, type: 3}
+  m_seThrow: {fileID: 8300000, guid: 705e6eb852da1fb4288da63be04c6a97, type: 3}
+  m_seDamage: {fileID: 8300000, guid: ac638bc9f6b995c43a419c0260b0ca31, type: 3}
+  m_seDeath: {fileID: 8300000, guid: 590a40adcf76cd045ab06b086ab93cc5, type: 3}
   m_attackSpan: 2.5
   m_attackReach: 4
   m_attackPower: 1
