@@ -125,11 +125,17 @@ public class GameManager : MonoBehaviour
 			{
 				case SceneType.Game:
 
+					if (!GameObject.FindWithTag("Ravel"))
+					{
+						return;
+					}
 					m_ravel = GameObject.FindWithTag("Ravel").GetComponent<TextMeshProUGUI>();
 
+					// 前のプレイの情報をリセット
 					m_isGameOver = false;
 					m_startElapsed = 0;
 					m_gameOverElapsed = 0;
+					m_totalScore = 0;
 
 					break;
 
