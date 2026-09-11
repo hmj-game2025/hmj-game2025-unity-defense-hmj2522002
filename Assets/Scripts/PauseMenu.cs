@@ -160,6 +160,7 @@ public class PauseMenu : MonoBehaviour
 			}
 
 			SceneChanger.Instance.StartChangeScene("StageSelect", GameManager.SceneType.StageSelect);
+			BGM.Instance.PlayBGM = false;
 			Continue();
 		}
 		else

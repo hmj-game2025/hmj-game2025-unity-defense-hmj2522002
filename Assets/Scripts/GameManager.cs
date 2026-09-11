@@ -136,6 +136,7 @@ public class GameManager : MonoBehaviour
 					m_startElapsed = 0;
 					m_gameOverElapsed = 0;
 					m_totalScore = 0;
+					m_isShowedResult = false;
 
 					break;
 

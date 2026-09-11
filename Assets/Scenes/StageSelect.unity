@@ -3108,6 +3108,7 @@ MonoBehaviour:
   m_stageName: {fileID: 1896819108}
   m_highScore: {fileID: 1839200885}
   m_seSelect: {fileID: 8300000, guid: 8c159062070d203458c358bf1e55a3fb, type: 3}
+  m_seCansel: {fileID: 8300000, guid: d628b21cc6adee443a2d2d2d614d8479, type: 3}
   m_seMove: {fileID: 8300000, guid: 590a40adcf76cd045ab06b086ab93cc5, type: 3}
   m_iconOffset: {x: 0, y: -40, z: 0}
   m_iconDist: 60

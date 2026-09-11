@@ -26,6 +26,7 @@ public class StageSelect : MonoBehaviour
 	[SerializeField] TextMeshProUGUI m_stageName;
 	[SerializeField] TextMeshProUGUI m_highScore;
 	[SerializeField] AudioClip m_seSelect;
+	[SerializeField] AudioClip m_seCansel;
 	[SerializeField] AudioClip m_seMove;
 	[SerializeField] Vector3 m_iconOffset;
 	[SerializeField] float m_iconDist;
@@ -183,5 +184,7 @@ public class StageSelect : MonoBehaviour
 		m_sceneChanger.StartChangeScene("Title", GameManager.SceneType.Title);
 
 		BGM.Instance.PlayBGM = false;
+
+		m_audioSource.PlayOneShot(m_seCansel);
 	}
 }
