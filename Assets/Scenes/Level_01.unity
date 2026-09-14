@@ -29547,6 +29547,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 47c0d920-446a-4f22-9521-0946907b7f97
     m_ActionName: Player/Pause[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1484393846}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: OnCloseMenu
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 852e0e5c-f0f9-4aee-804e-93636f057305
+    m_ActionName: Menu/Close[/XInputControllerWindows/start,/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Menu
