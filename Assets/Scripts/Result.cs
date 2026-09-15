@@ -56,6 +56,12 @@ public class Result : MonoBehaviour
 			timeBonus = 0;
 		}
 
+		if (m_castleHp01 <= 0.0f)
+		{
+			time = "--:--.--";
+			timeBonus = 0;
+		}
+
 		m_timeBonusUi.transform.Find("Text").GetComponent<TextMeshProUGUI>().text
 			= "クリアタイム ( " + time + " )";
 		m_timeBonusUi.transform.Find("Score").GetComponent<TextMeshProUGUI>().text

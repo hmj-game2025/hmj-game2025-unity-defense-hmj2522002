@@ -40,7 +40,6 @@ public class EnemyGenerator : MonoBehaviour
 	[SerializeField] List<Wave> m_waves;
 
 	GameManager m_gameManager;
-	float m_delta;
 	int m_nowWave;
 	int m_enemyLeftInNowWave;
 	int m_enemyLeftInThisGame;
@@ -80,12 +79,6 @@ public class EnemyGenerator : MonoBehaviour
 		}
 
 		UpdateEnemyAmountText();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-		m_delta += Time.deltaTime;
     }
 
 	void UpdateEnemyAmountText()

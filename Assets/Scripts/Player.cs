@@ -36,8 +36,10 @@ public class Player : MonoBehaviour
 	[SerializeField] int m_spinAttacksSpinAmount;   // 回転攻撃の回転数
 
 	const float SpinSpeed = 800.0f;
-	const int ComboAttacks = 4;
 	const float StickActiveMin = 0.5f;
+	const int ComboAttacks = 4;
+	const int PauseWaitControllFrame = 2;
+
 
 	Camera m_camera;
 	Animator m_animator;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
 	float m_playTime;
 	int m_score;
 	int m_comboAmount;
+	int m_waitPauseFrame;
 	bool m_canBasicMove;	// 移動、ジャンプの基本的な動作ができるか
 	bool m_canTotalMove;    // 攻撃なども含めたすべての動作ができるか
 	bool m_isStun;
@@ -99,6 +102,7 @@ public class Player : MonoBehaviour
 		m_animator = m_playerObj.GetComponent<Animator>();
 		m_scoreText = GameObject.FindWithTag("Score").GetComponent<TextMeshProUGUI>();
 		m_audioSource = GetComponent<AudioSource>();
+		m_isSendStatus = false;
 
 		// 仮で関数を実行してテキストを反映させる
 		AddScore(0);
@@ -117,6 +121,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		Debug.Log(m_score);
+
 		if (m_pause.IsPause)
 		{
 			return;
@@ -127,6 +133,13 @@ public class Player : MonoBehaviour
 		{
 			m_playTime += Time.deltaTime;
 		}
+
+		// ポーズ解除後再度ポーズ可能になるまでのフレーム数
+		if (m_waitPauseFrame > 0)
+		{
+			m_waitPauseFrame--;
+		}
+
 
 		m_attackedDelay += Time.deltaTime;
 
@@ -209,6 +222,12 @@ public class Player : MonoBehaviour
 					StartCoroutine(TryAttack(AttackType.SpinAttack));
 				}
 			}
+
+			// 回転攻撃が終わったら攻撃前の向きに戻す
+			if (m_spinAttackTime <= 0)
+			{
+				transform.eulerAngles = m_startSpinAttackRotation;
+			}
 		}
 
 		m_prevSpinAttackTime = m_spinAttackTime;
@@ -277,6 +296,8 @@ public class Player : MonoBehaviour
 
 			m_gameManager.MainScore = m_score;
 			m_gameManager.PlayTime = m_playTime;
+
+			Debug.Log("SendStatus");
 		}
 
 		m_animator.SetBool("IsGrounded", m_controller.isGrounded);
@@ -426,6 +447,10 @@ public class Player : MonoBehaviour
 			return;
 		}
 		if (SceneChanger.Instance.IsFade)
+		{
+			return;
+		}
+		if (m_waitPauseFrame > 0)
 		{
 			return;
 		}

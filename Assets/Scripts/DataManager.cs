@@ -22,7 +22,7 @@ public class DataManager : MonoBehaviour
 
     private void Start()
     {
-
+		// SaveDataからハイスコアの情報を取得する
         m_data = SaveData.Instance.GetData();
 
         // パス名を取得
@@ -44,13 +44,12 @@ public class DataManager : MonoBehaviour
 
     void Save(SaveData.Data data)
     {
+		// json形式に変換
         string json = JsonUtility.ToJson(data);
-        //StreamWriter writer = new StreamWriter(m_filePath, false);
-        //writer.WriteLine(json);
-        //writer.Close();
 
         Debug.Log("Save JSON : [" + json + "]");
 
+		// ファイルにデータを記載する
         using (StreamWriter writer = new StreamWriter(m_filePath, false))
         {
             writer.WriteLine(json);
@@ -59,6 +58,7 @@ public class DataManager : MonoBehaviour
 
     SaveData.Data Load(string path)
     {
+		// jsonファイルを読み、セーブデータを復元
         StreamReader reader = new StreamReader(path);
         string json = reader.ReadToEnd();
         reader.Close();
@@ -66,19 +66,9 @@ public class DataManager : MonoBehaviour
         return JsonUtility.FromJson<SaveData.Data>(json);
     }
 
-    //public void Write(int stageNum, int score)
-    //{
-    //    m_data.highScores[stageNum] = score;
-    //}
-
-    //public int Read(int stageNum)
-    //{
-    //    return m_data.highScores[stageNum];
-    //}
-
-
     public void SaveToFile()
     {
+		// 外部からセーブを呼び出す用
         Debug.Log($"m_filePath = [{m_filePath}]");
         Debug.Log($"m_filePath == null : {m_filePath == null}");
         Debug.Log($"m_filePath.Length : {(m_filePath == null ? -1 : m_filePath.Length)}");
