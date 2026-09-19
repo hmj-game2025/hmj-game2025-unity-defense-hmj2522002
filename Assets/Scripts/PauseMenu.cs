@@ -104,6 +104,9 @@ public class PauseMenu : MonoBehaviour
         m_screen.SetActive(true);
 		m_waitControllFrame = PauseWaitControllFrame;
 
+		// ポーズ中の暗転イメージを画面サイズに合わせる
+		m_screen.GetComponent<RectTransform>().sizeDelta = new(Screen.width, Screen.height);
+
         // timeScale... 物理演算等のスピード。deltaTimeの値にも比例している。
         // フレーム単位のdeltaTimeを使わないカウントダウン処理などには反映されない
         Time.timeScale = 0.0f;

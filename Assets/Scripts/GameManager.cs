@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
 
 					break;
 
-				case SceneType.StageSelect:
+				case SceneType.Result:
 
 					SaveData saveData = SaveData.Instance;
 					DataManager dataManager = DataManager.Instance;

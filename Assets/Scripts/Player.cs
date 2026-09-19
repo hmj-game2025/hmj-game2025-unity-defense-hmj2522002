@@ -131,7 +131,7 @@ public class Player : MonoBehaviour
 		}
 
 		// ポーズ解除後再度ポーズ可能になるまでのフレーム数
-		if (m_waitPauseFrame > 0)
+		if (m_waitPauseFrame > 0 && !m_pause.IsPause)
 		{
 			m_waitPauseFrame--;
 		}
@@ -451,6 +451,8 @@ public class Player : MonoBehaviour
 			return;
 		}
 
+		// ポーズ解除後一定フレームはポーズを再度表示できないようにする
+		m_waitPauseFrame = PauseWaitControllFrame;
 		m_pause.OpenMenu();
 	}
 
