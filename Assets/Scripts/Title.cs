@@ -39,6 +39,10 @@ public class Title : MonoBehaviour
 		{
 			return;
 		}
+		if (!callbackContext.performed)
+		{
+			return;
+		}
 
 		m_sceneChanger.StartChangeScene("StageSelect", GameManager.SceneType.StageSelect);
 

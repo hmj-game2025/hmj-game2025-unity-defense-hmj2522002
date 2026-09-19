@@ -157,6 +157,10 @@ public class StageSelect : MonoBehaviour
 		{
 			return;
 		}
+		if (!callbackContext.performed)
+		{
+			return;
+		}
 
 		// ステージに飛ぶ ///////////////////////////////////////////////////////////////////////////////////////////////
 		m_gameManager.StageName = m_stages[m_nowCursor].stageName;
@@ -177,6 +181,10 @@ public class StageSelect : MonoBehaviour
 	public void OnBack(InputAction.CallbackContext callbackContext)
 	{
 		if (m_sceneChanger.IsFade)
+		{
+			return;
+		}
+		if (!callbackContext.performed)
 		{
 			return;
 		}

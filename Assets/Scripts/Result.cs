@@ -110,6 +110,10 @@ public class Result : MonoBehaviour
 		{
 			return;
 		}
+		if (!callbackContext.performed)
+		{
+			return;
+		}
 
 		SceneChanger.Instance.StartChangeScene("StageSelect", GameManager.SceneType.StageSelect);
 
