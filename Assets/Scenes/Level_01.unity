@@ -22836,14 +22836,14 @@ MonoBehaviour:
   m_enemyAmount: {fileID: 1909574136}
   m_waitNextWaveTime: 1
   m_enemyTypes:
-  - {fileID: 4825220693858700318, guid: 031a5b2cfc64c1647af5f86bfa6c460b, type: 3}
-  - {fileID: 4825220693858700318, guid: a2a14e861044974458de3eb8bf2d5bbe, type: 3}
-  - {fileID: 4825220693858700318, guid: 6a6f07c0b4f97ec4a9149e964a8275bf, type: 3}
-  - {fileID: 4825220693858700318, guid: 9ba51c0e193fc264f9a8167b13429486, type: 3}
-  - {fileID: 4825220693858700318, guid: ffb39753581c3ea4e87a0303c0635b00, type: 3}
-  - {fileID: 4825220693858700318, guid: 735fcc33c392b0d45b1e7e755486655b, type: 3}
-  - {fileID: 4825220693858700318, guid: ffe7ea45ab580fa40a2fd772478a6836, type: 3}
-  - {fileID: 4825220693858700318, guid: e032e31dac5680a48a98382849797adc, type: 3}
+  - {fileID: 4825220693858700318, guid: 2b6c7ac7e9e5cd144b97fbd7ec1d2730, type: 3}
+  - {fileID: 4825220693858700318, guid: 7e27e7e404d96aa4e810823b920b29db, type: 3}
+  - {fileID: 4825220693858700318, guid: 170a83fafdb2b1a4d9a3adb21f589c12, type: 3}
+  - {fileID: 4825220693858700318, guid: db363006df28a954383dd6da065b896e, type: 3}
+  - {fileID: 4825220693858700318, guid: 51b326a45391b5a479c6858f208b8f9c, type: 3}
+  - {fileID: 4825220693858700318, guid: 021ef3e558cb5064dbf47d581ebbc1f6, type: 3}
+  - {fileID: 4825220693858700318, guid: eb8e166f3def646478ad2c75ca5da5bb, type: 3}
+  - {fileID: 4825220693858700318, guid: fdb1ba50e62ee004aa60faaaa6a4f17a, type: 3}
   m_waves:
   - m_spawnInfos:
     - position: {x: 26, y: 2, z: 14}
