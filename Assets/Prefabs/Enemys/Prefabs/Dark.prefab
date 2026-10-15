@@ -10056,6 +10056,7 @@ MonoBehaviour:
   m_moveSpeed: 1
   m_hp: 36
   m_playerChaseTime: 2
+  m_bulletHightOffset: 0
   m_score: 1500
   m_attackStatus:
   - startForwardOffset: 0
@@ -10065,7 +10066,7 @@ MonoBehaviour:
     attackSpan: 0.4
     attackHitStayTime: 0.4
     knockBackHorizontalPower: 2
-    knockBackVerticalPower: 2
+    knockBackVerticalPower: 0.02
     attackPower: 0.6
     attackRadius: 3
   - startForwardOffset: 0
@@ -10075,7 +10076,7 @@ MonoBehaviour:
     attackSpan: 0.4
     attackHitStayTime: 0.4
     knockBackHorizontalPower: 3
-    knockBackVerticalPower: 3
+    knockBackVerticalPower: 0.02
     attackPower: 1.2
     attackRadius: 4
   - startForwardOffset: 0
@@ -10085,7 +10086,7 @@ MonoBehaviour:
     attackSpan: 0.4
     attackHitStayTime: 0.4
     knockBackHorizontalPower: 4
-    knockBackVerticalPower: 4
+    knockBackVerticalPower: 0.03
     attackPower: 2
     attackRadius: 5
 --- !u!195 &2947972143809450340

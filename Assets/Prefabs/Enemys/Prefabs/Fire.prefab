@@ -311,8 +311,8 @@ MonoBehaviour:
     attackSpan: 0.1
     attackHitStayTime: 0.1
     knockBackHorizontalPower: 3
-    knockBackVerticalPower: 3
-    attackPower: 1
+    knockBackVerticalPower: 0.03
+    attackPower: 1.2
     attackRadius: 1.2
 --- !u!195 &2947972143809450340
 NavMeshAgent:

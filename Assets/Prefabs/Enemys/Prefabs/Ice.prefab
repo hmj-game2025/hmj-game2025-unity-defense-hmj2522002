@@ -279,7 +279,7 @@ MonoBehaviour:
     attackSpan: 0.1
     attackHitStayTime: 0.1
     knockBackHorizontalPower: 0
-    knockBackVerticalPower: 0
+    knockBackVerticalPower: 0.01
     attackPower: 0.1
     attackRadius: 1.2
 --- !u!195 &2947972143809450340

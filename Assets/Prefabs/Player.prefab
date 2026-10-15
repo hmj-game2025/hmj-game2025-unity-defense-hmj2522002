@@ -281,7 +281,7 @@ MonoBehaviour:
   m_attackHitKeepDuration: 0.1
   m_cantMoveAfterSpinAttackTime: 0.3
   m_moveHorizontalSpeed: 0
-  m_jumpPower: 10
+  m_jumpPower: 0.1
   m_gravityScale: 0.2
   m_minStunTime: 0.75
   m_spinAttacksSpinAmount: 3

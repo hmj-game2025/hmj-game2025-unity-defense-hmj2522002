@@ -5108,8 +5108,8 @@ MonoBehaviour:
     attackWaitTime: 0.1
     attackSpan: 0.1
     attackHitStayTime: 0.2
-    knockBackHorizontalPower: 4
-    knockBackVerticalPower: 4
+    knockBackHorizontalPower: 5
+    knockBackVerticalPower: 0.04
     attackPower: 0.8
     attackRadius: 1.6
 --- !u!195 &2947972143809450340

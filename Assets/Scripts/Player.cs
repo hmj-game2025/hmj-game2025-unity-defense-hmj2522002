@@ -178,11 +178,11 @@ public class Player : MonoBehaviour
 		}
 
 		Vector3 moveX_Z = new(m_moveXZ.x, 0, m_moveXZ.y);
-		moveX_Z *= m_maxWalkSpeed;
+		moveX_Z *= m_maxWalkSpeed * Time.deltaTime;
 
-		m_speedY -= m_gravityScale;
+		m_speedY -= m_gravityScale * Time.deltaTime;
 
-		m_totalMove = (moveX_Z + Vector3.up * m_speedY) * Time.deltaTime;
+		m_totalMove = moveX_Z + Vector3.up * m_speedY;
 
 		m_controller.Move(m_totalMove);
 
@@ -274,7 +274,7 @@ public class Player : MonoBehaviour
 		// ê⁄ínîªíË /////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (m_controller.isGrounded)
 		{
-			m_speedY = -5.0f;
+			m_speedY = -0.05f;
 			if (!m_prevGrounded)
 			{
 				m_audioSource.PlayOneShot(m_seGround);
