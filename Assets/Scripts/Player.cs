@@ -136,7 +136,6 @@ public class Player : MonoBehaviour
 			m_waitPauseFrame--;
 		}
 
-
 		m_attackedDelay += Time.deltaTime;
 
 		float boostMagnification = 
@@ -161,7 +160,7 @@ public class Player : MonoBehaviour
 			// ‘¬“x’´‰ß‚ð–h‚®‚½‚ßAÅ‚‘¬‚ÅŽ~‚ß‚é
 			if (m_moveXZ.magnitude > m_leftStickControll.magnitude)
 			{
-				m_moveXZ = m_moveXZ.normalized * m_leftStickControll.magnitude;
+				m_moveXZ = m_moveXZ.normalized * m_leftStickControll.magnitude * Time.deltaTime;
 			}
 		}
 		if (m_moveXZ.magnitude > m_leftStickControll.magnitude ||
@@ -180,7 +179,7 @@ public class Player : MonoBehaviour
 		}
 
 		Vector3 moveX_Z = new(m_moveXZ.x, 0, m_moveXZ.y);
-		moveX_Z *= m_maxWalkSpeed * Time.deltaTime;
+		moveX_Z *= m_maxWalkSpeed;
 
 		m_speedY -= m_gravityScale * Time.deltaTime;
 
