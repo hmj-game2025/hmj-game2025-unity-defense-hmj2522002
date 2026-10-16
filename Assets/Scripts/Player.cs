@@ -142,6 +142,8 @@ public class Player : MonoBehaviour
 		float boostMagnification = 
 			m_controller.isGrounded ? 1.0f : m_boostMagnificationAir;
 
+		float totalBoostSpeed = m_boostWalkSpeed * boostMagnification * Time.deltaTime;
+
 		// 攻撃中は横移動の制限を設ける
 		m_canBasicMove = m_comboAttackDelay < m_attackedDelay;
 
@@ -153,7 +155,7 @@ public class Player : MonoBehaviour
 		{
 			if (m_canBasicMove && m_canTotalMove)
 			{
-				m_moveXZ += m_leftStickControll.normalized * m_boostWalkSpeed * boostMagnification;
+				m_moveXZ += m_leftStickControll.normalized * totalBoostSpeed;
 			}
 
 			// 速度超過を防ぐため、最高速で止める
@@ -168,10 +170,10 @@ public class Player : MonoBehaviour
 			!m_canTotalMove
 			)
 		{
-			m_moveXZ -= m_moveXZ.normalized * m_boostWalkSpeed * boostMagnification;
+			m_moveXZ -= m_moveXZ.normalized * totalBoostSpeed;
 
 			// ムーンウォークを防ぐために0で止める
-			if (m_moveXZ.magnitude < 0.05f)
+			if (m_moveXZ.magnitude < totalBoostSpeed)
 			{
 				m_moveXZ = Vector2.zero;
 			}

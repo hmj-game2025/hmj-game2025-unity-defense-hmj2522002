@@ -243,6 +243,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 47c0d920-446a-4f22-9521-0946907b7f97
     m_ActionName: Player/Pause[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 852e0e5c-f0f9-4aee-804e-93636f057305
+    m_ActionName: Menu/Close[/XInputControllerWindows/start,/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -269,7 +273,7 @@ MonoBehaviour:
   m_seAttack: {fileID: 8300000, guid: 86e6ae941f392d849802b54516b3a159, type: 3}
   m_seSpinAttack: {fileID: 8300000, guid: 32e8b1fcb8066464381028add522f1d0, type: 3}
   m_seDamage: {fileID: 8300000, guid: ac638bc9f6b995c43a419c0260b0ca31, type: 3}
-  m_boostWalkSpeed: 0.05
+  m_boostWalkSpeed: 5
   m_boostMagnificationAir: 0.15
   m_maxWalkSpeed: 8
   m_attackDamage: 2
